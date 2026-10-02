@@ -78,5 +78,14 @@ export interface AnalysisRequest {
 - `src/components/skeleton-loader.tsx`: `<SkeletonLoader />`, `<SummarySkeleton />`, `<SentimentSkeleton />`, `<InsightsSkeleton />`, `<ProblemsSkeleton />`
 - `src/components/error-alert.tsx`: `<ErrorAlert />`
 
+## Из таска 04 — Визуализация результатов и дашборд
+- `src/components/results/summary-card.tsx`: `<SummaryCard />`, `calculateHealthScore(sentiment)`
+- `src/components/results/sentiment-card.tsx`: `<SentimentCard />`, `getSentimentStatus(sentiment)`
+- `src/components/results/top-insights.tsx`: `<TopInsights />`, `getInsightImpactTag(insight, index)`
+- `src/components/results/problems-table.tsx`: `<ProblemsTable />`, `filterProblemsByPriority()`, `exportProblemsToCSV()`, `exportAnalysisToJSON()`
+- `src/components/results/index.ts`: Barcha natija komponentlari eksporti
+- `src/app/page.tsx`: Asosiy Next.js sahifasi, to'liq end-to-end integratsiya
+
+
 
 ```
