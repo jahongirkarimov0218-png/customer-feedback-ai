@@ -87,13 +87,13 @@ export function Presets({
   return (
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-          Tayyor namunalarni yuklash (Presets)
+        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+          Haqiqiy Mijoz Ma&apos;lumotlari Namunalari (Industry Scenarios)
         </label>
-        <span className="text-xs text-slate-400">1-bosish bilan to&apos;ldirish</span>
+        <span className="text-[11px] text-slate-400 font-medium">1-klik bilan sinash</span>
       </div>
 
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {FEEDBACK_PRESETS.map((preset) => {
           const Icon = PRESET_ICONS[preset.iconName] || ShoppingBag;
           const isActive = activePresetId === preset.id;
@@ -105,47 +105,66 @@ export function Presets({
               disabled={disabled}
               onClick={() => onSelectPreset(preset)}
               className={cn(
-                "group relative flex flex-col items-start rounded-lg border p-3 text-left transition-all duration-150",
-                "focus:outline-none focus:ring-2 focus:ring-slate-900/10",
+                "group relative flex flex-col items-start rounded-xl p-1 text-left transition-all duration-150 active-press",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-1",
                 isActive
-                  ? "border-slate-900 bg-slate-900/5 text-slate-900 shadow-sm ring-1 ring-slate-900/15"
-                  : "border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/70 text-slate-700",
+                  ? "bg-slate-950 ring-2 ring-slate-950/20"
+                  : "bg-slate-200/60 hover:bg-slate-300/60 border border-slate-200/50",
                 disabled && "cursor-not-allowed opacity-60"
               )}
             >
-              <div className="flex w-full items-center justify-between mb-2">
-                <div
-                  className={cn(
-                    "flex h-7 w-7 items-center justify-center rounded-md text-xs transition-colors",
-                    isActive
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-700 group-hover:bg-slate-200"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                </div>
-                <span
-                  className={cn(
-                    "rounded px-1.5 py-0.5 text-[10px] font-medium tracking-tight",
-                    isActive
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-600"
-                  )}
-                >
-                  {preset.badge}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1.5 font-medium text-xs text-slate-900">
-                <span>{preset.title}</span>
-                {isActive && (
-                  <Check className="h-3 w-3 text-emerald-600 inline-block" />
+              {/* Inner core */}
+              <div
+                className={cn(
+                  "w-full h-full rounded-[calc(0.75rem-2px)] p-3 transition-colors flex flex-col justify-between",
+                  isActive
+                    ? "bg-slate-900 text-white"
+                    : "bg-white text-slate-800 hover:bg-slate-50/90"
                 )}
-              </div>
+              >
+                <div>
+                  <div className="flex w-full items-center justify-between mb-2.5">
+                    <div
+                      className={cn(
+                        "flex h-7 w-7 items-center justify-center rounded-lg transition-colors",
+                        isActive
+                          ? "bg-white/10 text-emerald-400"
+                          : "bg-slate-100 text-slate-700 group-hover:bg-slate-200"
+                      )}
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                    </div>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-tight",
+                        isActive
+                          ? "bg-white/15 text-slate-200"
+                          : "bg-slate-100 text-slate-600"
+                      )}
+                    >
+                      {preset.badge}
+                    </span>
+                  </div>
 
-              <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-slate-500">
-                {preset.summary}
-              </p>
+                  <div className="flex items-center gap-1.5 text-xs font-bold leading-snug">
+                    <span className={isActive ? "text-white" : "text-slate-950"}>
+                      {preset.title}
+                    </span>
+                    {isActive && (
+                      <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 inline-block" />
+                    )}
+                  </div>
+
+                  <p
+                    className={cn(
+                      "mt-1.5 line-clamp-2 text-[11px] leading-relaxed",
+                      isActive ? "text-slate-300" : "text-slate-500"
+                    )}
+                  >
+                    {preset.summary}
+                  </p>
+                </div>
+              </div>
             </button>
           );
         })}

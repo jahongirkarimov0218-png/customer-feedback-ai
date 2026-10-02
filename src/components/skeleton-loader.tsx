@@ -168,10 +168,10 @@ export function SkeletonLoader({
       {/* Notice bar */}
       <div className="flex items-center justify-between rounded-lg border border-slate-200/80 bg-slate-50/90 px-4 py-2.5 text-xs text-slate-600">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-          <span className="font-medium">AI semantik tahlil qilmoqda...</span>
+          <div className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="font-medium text-slate-800">Mijoz signallari tahlil qilinmoqda...</span>
         </div>
-        <span className="text-[11px] text-slate-400">Taxminan 1-3 soniya</span>
+        <span className="text-[11px] text-slate-400 font-mono">Taxminan 1-3 soniya</span>
       </div>
 
       {/* Summary */}

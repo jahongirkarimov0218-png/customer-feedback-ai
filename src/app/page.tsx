@@ -122,17 +122,17 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 space-y-10">
       {/* 1. Founder-First Hero Section (Problem -> Outcome -> Clarity) */}
-      <section className="text-center sm:text-left space-y-4">
-        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-subtle">
+      <section className="text-center sm:text-left space-y-4 pt-2">
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1 text-xs font-semibold text-slate-800 shadow-2xs">
           <Target className="h-3.5 w-3.5 text-emerald-600" />
           <span>Product Intelligence &amp; Customer Voice System</span>
         </div>
 
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl leading-tight">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl leading-[1.15]">
           Mijoz fikrlari tarqoq bo‘lganda, birinchi bo‘lib nimani tuzatish kerak?
         </h1>
 
-        <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+        <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base font-normal">
           Support chatlari, ilova sharhlari va e&apos;tirozlardagi shovqinni saralash o&apos;rniga,
           haqiqiy ildiz muammolarni ajrating: aniq mijoz dalillari, biznesga ta&apos;sir qiluvchi xatarlar (churn/daromad)
           va jamoa uchun ustuvorlashtirilgan harakatlar.
@@ -140,25 +140,25 @@ export default function HomePage() {
 
         {/* Value Pipeline: Feedback -> Problem -> Evidence -> Impact -> Priority -> Action */}
         <div className="pt-2">
-          <div className="inline-flex flex-wrap items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/70 p-2 text-xs text-slate-600">
-            <span className="font-semibold text-slate-900">Mahsulot oqimi:</span>
-            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle">
+          <div className="inline-flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-100/70 p-2 text-xs text-slate-600 shadow-2xs">
+            <span className="font-bold text-slate-900 px-1">Mahsulot oqimi:</span>
+            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-slate-800">
               1. Xom Feedback
             </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-amber-700">
+            <span className="text-slate-400 font-bold">→</span>
+            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-amber-700">
               2. Ildiz Muammo
             </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-emerald-700">
+            <span className="text-slate-400 font-bold">→</span>
+            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-emerald-700">
               3. Mijoz Dalili
             </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-rose-700">
+            <span className="text-slate-400 font-bold">→</span>
+            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-rose-700">
               4. Biznes Ta&apos;siri
             </span>
-            <span className="text-slate-400">→</span>
-            <span className="rounded bg-slate-900 px-2 py-0.5 font-semibold text-white shadow-subtle">
+            <span className="text-slate-400 font-bold">→</span>
+            <span className="rounded-lg bg-slate-950 px-2.5 py-1 font-bold text-white shadow-2xs">
               5. Ustuvor Harakat
             </span>
           </div>
@@ -250,99 +250,101 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 6. Empty State: 3-Step Clear Mental Model */}
+      {/* 6. Empty State: 3-Step Clear Mental Model with Double-Bezel */}
       {!analysisData && !isLoading && (
-        <section className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-6 sm:p-8">
-          <div className="text-center max-w-xl mx-auto">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 shadow-subtle mb-3">
-              <Layers className="h-5 w-5 text-slate-700" />
+        <section className="rounded-2xl border border-slate-200/90 bg-slate-100/60 p-1.5 sm:p-2 shadow-xs">
+          <div className="rounded-xl border border-slate-200/70 bg-white/90 p-6 sm:p-8 shadow-xs">
+            <div className="text-center max-w-xl mx-auto">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 border border-slate-200 text-slate-800 shadow-2xs mb-3">
+                <Layers className="h-5 w-5 text-slate-700" />
+              </div>
+              <h3 className="text-sm font-bold text-slate-950 tracking-tight">
+                Qanday ishlaydi?
+              </h3>
+              <p className="mt-1 text-xs text-slate-500 leading-relaxed font-normal">
+                Yuqoridagi maydonga mijozlaringiz bildirgan fikrlarni kiriting yoki bir klik bilan tayyor sanoat keyslaridan birini sinab ko&apos;ring.
+              </p>
             </div>
-            <h3 className="text-sm font-semibold text-slate-900">
-              Qanday ishlaydi?
-            </h3>
-            <p className="mt-1 text-xs text-slate-500 leading-relaxed">
-              Yuqoridagi maydonga mijozlaringiz bildirgan fikrlarni kiriting yoki bir klik bilan tayyor sanoat keyslaridan birini sinab ko&apos;ring.
-            </p>
-          </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {/* Step 1 */}
-            <div className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-subtle flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 mb-1">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
-                    1
-                  </span>
-                  <span>Mijozlar ovozini jamlash</span>
+            <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
+              {/* Step 1 */}
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
+                      1
+                    </span>
+                    <span>Mijozlar ovozini jamlash</span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Support chiptalari, do&apos;kon sharhlari va e&apos;tirozlar matnini kiritish yoki sanoat presetini tanlash.
+                  </p>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Support chiptalari, do&apos;kon sharhlari va e&apos;tirozlar matnini kiritish yoki sanoat presetini tanlash.
-                </p>
-              </div>
-              <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
-                <Zap className="h-3 w-3" />
-                <span>4 ta tayyor sanoat keysi</span>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-subtle flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 mb-1">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
-                    2
-                  </span>
-                  <span>Ildiz muammolarni ajratish</span>
+                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-emerald-700 font-semibold">
+                  <Zap className="h-3 w-3" />
+                  <span>4 ta tayyor sanoat keysi</span>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari avtomatik aniqlanadi.
-                </p>
               </div>
-              <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-blue-600 font-medium">
-                <Sparkles className="h-3 w-3" />
-                <span>Semantik tahlil &amp; 100% oflayn</span>
-              </div>
-            </div>
 
-            {/* Step 3 */}
-            <div className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-subtle flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 mb-1">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
-                    3
-                  </span>
-                  <span>Ustuvor harakatlar matritsasi</span>
+              {/* Step 2 */}
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
+                      2
+                    </span>
+                    <span>Ildiz muammolarni ajratish</span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari avtomatik aniqlanadi.
+                  </p>
                 </div>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  P0/P1/P2 ustuvorliklari, tavsiya etilgan muhandislik yechimlari va Linear/Jira vazifalari formatida eksport.
-                </p>
+                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-indigo-700 font-semibold">
+                  <Sparkles className="h-3 w-3" />
+                  <span>Semantik tahlil &amp; 100% oflayn</span>
+                </div>
               </div>
-              <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-indigo-600 font-medium">
-                <TrendingUp className="h-3 w-3" />
-                <span>CSV, JSON va Linear nusxalash</span>
+
+              {/* Step 3 */}
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
+                      3
+                    </span>
+                    <span>Ustuvor harakatlar matritsasi</span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    P0/P1/P2 ustuvorliklari, tavsiya etilgan muhandislik yechimlari va Linear/Jira vazifalari formatida eksport.
+                  </p>
+                </div>
+                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-slate-800 font-semibold">
+                  <TrendingUp className="h-3 w-3" />
+                  <span>CSV, JSON va Linear nusxalash</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Quick Demo CTA Buttons */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs text-slate-500 mr-1">Tezkor sinash:</span>
-            <button
-              type="button"
-              onClick={() => handleQuickLoadPreset("ecommerce")}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-subtle hover:bg-slate-100 transition-colors"
-            >
-              <span>E-commerce do&apos;koni keysi</span>
-              <ArrowRight className="h-3 w-3 text-slate-400" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickLoadPreset("b2b-saas")}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-subtle hover:bg-slate-100 transition-colors"
-            >
-              <span>B2B SaaS keysi</span>
-              <ArrowRight className="h-3 w-3 text-slate-400" />
-            </button>
+            {/* Quick Demo CTA Buttons */}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              <span className="text-xs text-slate-500 mr-1 font-medium">Tezkor sinash:</span>
+              <button
+                type="button"
+                onClick={() => handleQuickLoadPreset("ecommerce")}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors active-press"
+              >
+                <span>E-commerce do&apos;koni keysi</span>
+                <ArrowRight className="h-3 w-3 text-slate-400" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLoadPreset("b2b-saas")}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors active-press"
+              >
+                <span>B2B SaaS keysi</span>
+                <ArrowRight className="h-3 w-3 text-slate-400" />
+              </button>
+            </div>
           </div>
         </section>
       )}

@@ -171,12 +171,13 @@ export function ProblemsTable({
     <>
       <div
         className={cn(
-          "rounded-xl border border-slate-200/90 bg-white shadow-card overflow-hidden",
+          "rounded-2xl border border-slate-200/90 bg-slate-100/70 p-1.5 sm:p-2 shadow-sm",
           className
         )}
       >
-        {/* Header Bar */}
-        <div className="border-b border-slate-100 p-5 sm:p-6 bg-slate-50/40">
+        <div className="rounded-xl border border-slate-200/70 bg-white shadow-xs overflow-hidden">
+          {/* Header Bar */}
+          <div className="border-b border-slate-100 p-5 sm:p-6 bg-slate-50/50">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-50 text-rose-700 border border-rose-100 shrink-0">
@@ -460,6 +461,7 @@ export function ProblemsTable({
               )}
             </tbody>
           </table>
+        </div>
         </div>
       </div>
 

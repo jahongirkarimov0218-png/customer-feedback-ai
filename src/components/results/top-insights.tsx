@@ -108,15 +108,15 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
   }
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-3", className)}>
       {/* Section Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-700 border border-amber-100">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-700 border border-amber-100">
             <Lightbulb className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight">
               Top 3 Strategik Xulosalar
             </h3>
             <p className="text-xs text-slate-500">
@@ -125,14 +125,14 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
           </div>
         </div>
 
-        <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium text-slate-400">
-          <Sparkles className="h-3 w-3 text-amber-500" />
-          AI Semantik Sintez
+        <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          Strategik Klasterlar
         </span>
       </div>
 
-      {/* 3 Grid Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {/* 3 Bento Cards with Double-Bezel Containment */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {items.slice(0, 3).map((insight, idx) => {
           const numberLabel = `#0${idx + 1}`;
           const impact = getInsightImpactTag(insight, idx);
@@ -141,55 +141,54 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
           return (
             <div
               key={idx}
-              className={cn(
-                "group relative flex flex-col justify-between rounded-xl border border-slate-200/90 bg-white p-5 shadow-card transition-all duration-150",
-                "hover:border-slate-300 hover:shadow-md"
-              )}
+              className="group rounded-2xl border border-slate-200/90 bg-slate-100/70 p-1.5 shadow-sm transition-all duration-150 hover:bg-slate-200/60"
             >
-              <div>
-                {/* Top badges: Index & Impact */}
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="inline-flex items-center justify-center rounded-md bg-slate-900 px-2 py-0.5 text-xs font-mono font-bold text-white shadow-subtle">
-                    {numberLabel}
-                  </span>
+              <div className="h-full rounded-xl border border-slate-200/70 bg-white p-5 flex flex-col justify-between shadow-xs">
+                <div>
+                  {/* Top badges: Index & Impact */}
+                  <div className="flex items-center justify-between gap-2 mb-3.5">
+                    <span className="inline-flex items-center justify-center rounded-md bg-slate-950 px-2.5 py-0.5 text-xs font-mono font-bold text-white shadow-2xs">
+                      {numberLabel}
+                    </span>
 
-                  <span
-                    className={cn(
-                      "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-tight",
-                      impact.badgeClass
-                    )}
-                  >
-                    <ImpactIcon className="h-3 w-3" />
-                    <span>{impact.tag}</span>
-                  </span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-tight",
+                        impact.badgeClass
+                      )}
+                    >
+                      <ImpactIcon className="h-3 w-3" />
+                      <span>{impact.tag}</span>
+                    </span>
+                  </div>
+
+                  {/* Insight Title */}
+                  <h4 className="text-sm font-bold text-slate-950 leading-snug tracking-tight">
+                    {insight.title}
+                  </h4>
+
+                  {/* Description */}
+                  <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                    {insight.description}
+                  </p>
+
+                  {/* Customer Verbatim Quote if available */}
+                  {insight.evidenceQuote && (
+                    <div className="mt-3.5 rounded-lg border border-slate-200/70 bg-slate-50/90 p-3 text-[11px] text-slate-600 leading-relaxed">
+                      <span className="font-semibold text-slate-900 mr-1 not-italic">Mijoz iqtibosi:</span>
+                      &ldquo;{insight.evidenceQuote}&rdquo;
+                    </div>
+                  )}
                 </div>
 
-                {/* Insight Title */}
-                <h4 className="text-sm font-semibold text-slate-900 leading-snug group-hover:text-slate-950 transition-colors">
-                  {insight.title}
-                </h4>
-
-                {/* Description */}
-                <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                  {insight.description}
-                </p>
-
-                {/* Customer Verbatim Quote if available */}
-                {insight.evidenceQuote && (
-                  <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50/80 p-2.5 text-[11px] italic text-slate-600">
-                    <span className="font-semibold text-slate-700 not-italic mr-1">“Mijoz ovozi:</span>
-                    {insight.evidenceQuote}”
-                  </div>
-                )}
-              </div>
-
-              {/* Bottom Strategic Action Indicator */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                <span className="flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Strategik qaror
-                </span>
-                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                {/* Bottom Strategic Action Indicator */}
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    <span>Strategik tavsiya</span>
+                  </span>
+                  <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </div>
               </div>
             </div>
           );
