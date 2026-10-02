@@ -1,15 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import {
-  RotateCcw,
-  Layers,
-  Zap,
-  ArrowRight,
-  TrendingUp,
-  Target,
-  Sparkles,
-} from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { FeedbackInput } from "@/components/feedback-input";
 import { SkeletonLoader } from "@/components/skeleton-loader";
 import { ErrorAlert, ErrorType } from "@/components/error-alert";
@@ -20,7 +12,7 @@ import {
   ProblemsTable,
 } from "@/components/results";
 import { EvidenceModal } from "@/components/results/evidence-modal";
-import { FEEDBACK_PRESETS, FeedbackPreset } from "@/components/presets";
+import { FeedbackPreset } from "@/components/presets";
 import { AnalysisResponse, ProblemSolutionItem } from "@/types/analyzer";
 
 export default function HomePage() {
@@ -32,7 +24,6 @@ export default function HomePage() {
     type: ErrorType;
   } | null>(null);
 
-  // Modal state for viewing verbatim quotes
   const [selectedProblemForEvidence, setSelectedProblemForEvidence] =
     useState<ProblemSolutionItem | null>(null);
   const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
@@ -44,7 +35,7 @@ export default function HomePage() {
     if (trimmed.length < 10) {
       setErrorState({
         message:
-          "Fikr matni kamida 10 ta belgidan iborat bo'lishi kerak. Iltimos, batafsilroq sharh yozing yoki tayyor namunalardan birini tanlang.",
+          "Fikr matni kamida 10 ta belgidan iborat bo'lishi kerak. Iltimos, batafsilroq sharh yozing yoki namunalardan birini tanlang.",
         type: "validation",
       });
       return;
@@ -70,7 +61,6 @@ export default function HomePage() {
 
       setAnalysisData(data as AnalysisResponse);
 
-      // Smooth scroll to results
       setTimeout(() => {
         resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
@@ -98,16 +88,6 @@ export default function HomePage() {
     setErrorState(null);
   };
 
-  const handleQuickLoadPreset = (presetId: string) => {
-    const found = FEEDBACK_PRESETS.find((p) => p.id === presetId);
-    if (found) {
-      setFeedbackText(found.fullText);
-      setErrorState(null);
-      // Auto-focus input area
-      window.scrollTo({ top: 200, behavior: "smooth" });
-    }
-  };
-
   const handleOpenEvidence = (problem: ProblemSolutionItem) => {
     setSelectedProblemForEvidence(problem);
     setIsEvidenceModalOpen(true);
@@ -118,52 +98,19 @@ export default function HomePage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 space-y-10">
-      {/* 1. Founder-First Hero Section (Problem -> Outcome -> Clarity) */}
-      <section className="text-center sm:text-left space-y-4 pt-2">
-        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1 text-xs font-semibold text-slate-800 shadow-2xs">
-          <Target className="h-3.5 w-3.5 text-emerald-600" />
-          <span>Product Intelligence &amp; Customer Voice System</span>
-        </div>
-
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl leading-[1.15]">
-          Mijoz fikrlari tarqoq bo‘lganda, birinchi bo‘lib nimani tuzatish kerak?
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 space-y-8">
+      {/* 1. Concise, Outcome-Focused Hero (Raycast & Linear Standard) */}
+      <section className="space-y-3 pt-2 text-center sm:text-left">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl leading-[1.12]">
+          Mijoz fikrlarini ustuvor vazifalarga aylantiring
         </h1>
 
-        <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base font-normal">
-          Support chatlari, ilova sharhlari va e&apos;tirozlardagi shovqinni saralash o&apos;rniga,
-          haqiqiy ildiz muammolarni ajrating: aniq mijoz dalillari, biznesga ta&apos;sir qiluvchi xatarlar (churn/daromad)
-          va jamoa uchun ustuvorlashtirilgan harakatlar.
+        <p className="max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-normal">
+          Tarqoq sharhlardan tizimli muammolarni ajrating, biznesga ta&apos;sirini baholang va keyingi muhandislik qadamini belgilang.
         </p>
-
-        {/* Value Pipeline: Feedback -> Problem -> Evidence -> Impact -> Priority -> Action */}
-        <div className="pt-2">
-          <div className="inline-flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200/90 bg-slate-100/70 p-2 text-xs text-slate-600 shadow-2xs">
-            <span className="font-bold text-slate-900 px-1">Mahsulot oqimi:</span>
-            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-slate-800">
-              1. Xom Feedback
-            </span>
-            <span className="text-slate-400 font-bold">→</span>
-            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-amber-700">
-              2. Ildiz Muammo
-            </span>
-            <span className="text-slate-400 font-bold">→</span>
-            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-emerald-700">
-              3. Mijoz Dalili
-            </span>
-            <span className="text-slate-400 font-bold">→</span>
-            <span className="rounded-lg bg-white px-2.5 py-1 font-semibold border border-slate-200/80 shadow-2xs text-rose-700">
-              4. Biznes Ta&apos;siri
-            </span>
-            <span className="text-slate-400 font-bold">→</span>
-            <span className="rounded-lg bg-slate-950 px-2.5 py-1 font-bold text-white shadow-2xs">
-              5. Ustuvor Harakat
-            </span>
-          </div>
-        </div>
       </section>
 
-      {/* 2. Feedback Input & Presets Workspace */}
+      {/* 2. Focused Feedback Input & Chip Presets Workspace */}
       <section id="feedback-workspace" className="space-y-4">
         <FeedbackInput
           value={feedbackText}
@@ -175,7 +122,7 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 3. Error State (Non-validation) */}
+      {/* 3. Error Alert */}
       {errorState && errorState.type !== "validation" && (
         <section className="animate-in fade-in duration-200">
           <ErrorAlert
@@ -187,7 +134,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 4. Loading Shimmer Skeleton State */}
+      {/* 4. Loading State */}
       {isLoading && (
         <section className="animate-in fade-in duration-200 pt-2">
           <SkeletonLoader />
@@ -201,12 +148,12 @@ export default function HomePage() {
           id="analysis-results"
           className="space-y-6 pt-4 animate-in fade-in slide-in-from-bottom-2 duration-300"
         >
-          {/* Results Action Header Bar */}
+          {/* Header Bar */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2">
-              <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
-              <h2 className="text-base font-bold text-slate-900 tracking-tight sm:text-lg">
-                Mahsulot Strategik Hisoboti (Customer Intelligence Report)
+              <span className="flex h-2 w-2 rounded-full bg-slate-900" />
+              <h2 className="text-base font-semibold text-slate-900 tracking-tight sm:text-lg">
+                Tahlil natijalari
               </h2>
             </div>
 
@@ -214,15 +161,15 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleResetAnalysis}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-subtle hover:bg-slate-50 hover:text-slate-900 transition-all active-press"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98] transition-transform duration-100 ease-out"
               >
                 <RotateCcw className="h-3 w-3" />
-                <span>Yangi tahlil boshlash</span>
+                <span>Yangi tahlil</span>
               </button>
             </div>
           </div>
 
-          {/* Row 1: Executive Summary & Health Score (7 cols) & Sentiment Breakdown (5 cols) */}
+          {/* Row 1: Executive Summary & Sentiment */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <SummaryCard
@@ -240,7 +187,7 @@ export default function HomePage() {
             <TopInsights insights={analysisData.topInsights} />
           </div>
 
-          {/* Row 3: 5-Column Problems Table (Problem | Impact | Evidence | Priority | Action) */}
+          {/* Row 3: Priority Matrix (P0/P1/P2) & Filtered Problem-Solution Table */}
           <div id="problems-matrix">
             <ProblemsTable
               problems={analysisData.problems}
@@ -251,106 +198,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 6. Empty State: 3-Step Clear Mental Model with Double-Bezel */}
-      {!analysisData && !isLoading && (
-        <section className="rounded-2xl border border-slate-200/90 bg-slate-100/60 p-1.5 sm:p-2 shadow-xs">
-          <div className="rounded-xl border border-slate-200/70 bg-white/90 p-6 sm:p-8 shadow-xs">
-            <div className="text-center max-w-xl mx-auto">
-              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 border border-slate-200 text-slate-800 shadow-2xs mb-3">
-                <Layers className="h-5 w-5 text-slate-700" />
-              </div>
-              <h3 className="text-sm font-bold text-slate-950 tracking-tight">
-                Qanday ishlaydi?
-              </h3>
-              <p className="mt-1 text-xs text-slate-500 leading-relaxed font-normal">
-                Yuqoridagi maydonga mijozlaringiz bildirgan fikrlarni kiriting yoki bir klik bilan tayyor sanoat keyslaridan birini sinab ko&apos;ring.
-              </p>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
-              {/* Step 1 */}
-              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
-                      1
-                    </span>
-                    <span>Mijozlar ovozini jamlash</span>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Support chiptalari, do&apos;kon sharhlari va e&apos;tirozlar matnini kiritish yoki sanoat presetini tanlash.
-                  </p>
-                </div>
-                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-emerald-700 font-semibold">
-                  <Zap className="h-3 w-3" />
-                  <span>4 ta tayyor sanoat keysi</span>
-                </div>
-              </div>
-
-              {/* Step 2 */}
-              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
-                      2
-                    </span>
-                    <span>Ildiz muammolarni ajratish</span>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari aniqlanadi.
-                  </p>
-                </div>
-                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-indigo-700 font-semibold">
-                  <Sparkles className="h-3 w-3" />
-                  <span>Semantik tahlil &amp; 100% oflayn</span>
-                </div>
-              </div>
-
-              {/* Step 3 */}
-              <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 shadow-2xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-900 mb-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-900 text-white font-mono text-[11px] shadow-2xs">
-                      3
-                    </span>
-                    <span>Ustuvor harakatlar matritsasi</span>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    P0/P1/P2 ustuvorliklari, tavsiya etilgan muhandislik yechimlari va Linear/Jira vazifalari formatida eksport.
-                  </p>
-                </div>
-                <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-slate-800 font-semibold">
-                  <TrendingUp className="h-3 w-3" />
-                  <span>CSV, JSON va Linear nusxalash</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Demo CTA Buttons */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-slate-500 mr-1 font-medium">Tezkor sinash:</span>
-              <button
-                type="button"
-                onClick={() => handleQuickLoadPreset("ecommerce")}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors active-press"
-              >
-                <span>E-commerce do&apos;koni keysi</span>
-                <ArrowRight className="h-3 w-3 text-slate-400" />
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickLoadPreset("b2b-saas")}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-colors active-press"
-              >
-                <span>B2B SaaS keysi</span>
-                <ArrowRight className="h-3 w-3 text-slate-400" />
-              </button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Global Evidence Modal */}
+      {/* Verbatim Customer Evidence Modal */}
       <EvidenceModal
         problem={selectedProblemForEvidence}
         isOpen={isEvidenceModalOpen}

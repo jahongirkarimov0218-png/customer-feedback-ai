@@ -4,7 +4,6 @@ import React, { useRef, useState, useEffect } from "react";
 import {
   RotateCcw,
   Loader2,
-  FileText,
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
@@ -60,7 +59,7 @@ export function FeedbackInput({
   onAnalyze,
   isLoading = false,
   disabled = false,
-  placeholder = "Mijozlar sharhlari, e'tirozlari yoki takliflarini shu yerga kiriting (kamida 10 ta belgi). Masalan: 'Buyurtma bergan kiyimlarim o'z vaqtida yetib kelmadi, kuryer 3 kun kechikib yetkazib berdi...'",
+  placeholder = "Mijozlarning xom fikrlari, app store sharhlari yoki intervyu qaydlarini kiriting...",
   minLength = 10,
   maxLength = 5000,
   error,
@@ -80,7 +79,6 @@ export function FeedbackInput({
   const isValidLength = currentValue.trim().length >= minLength && !isOverLimit;
   const canSubmit = isValidLength && !isLoading && !disabled;
 
-  // Sync active preset state if text changes away from preset
   useEffect(() => {
     if (activePresetId) {
       const selected = FEEDBACK_PRESETS.find((p) => p.id === activePresetId);
@@ -125,18 +123,17 @@ export function FeedbackInput({
     }
   };
 
-  // Smooth auto-resize of textarea height
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
-      textarea.style.height = `${Math.max(140, Math.min(textarea.scrollHeight, 380))}px`;
+      textarea.style.height = `${Math.max(130, Math.min(textarea.scrollHeight, 360))}px`;
     }
   }, [currentValue]);
 
   return (
-    <div className={cn("space-y-3.5", className)}>
-      {/* 4 Industry Presets Bar */}
+    <div className={cn("space-y-3", className)}>
+      {/* Chip Presets */}
       {showPresets && (
         <Presets
           onSelectPreset={handlePresetSelect}
@@ -145,7 +142,7 @@ export function FeedbackInput({
         />
       )}
 
-      {/* Main Linear/Raycast Style Intake Card */}
+      {/* Textarea Workspace */}
       <div
         className={cn(
           "rounded-xl border bg-white shadow-2xs transition-colors duration-150",
@@ -155,34 +152,10 @@ export function FeedbackInput({
             : "border-slate-200/90"
         )}
       >
-        {/* Header Toolbar */}
-        <div className="flex items-center justify-between border-b border-slate-100 px-3.5 py-2.5 sm:px-4 text-xs text-slate-500">
-          <div className="flex items-center gap-2 font-medium text-slate-800">
-            <FileText className="h-3.5 w-3.5 text-slate-400" />
-            <span>Mijoz fikrlari va sharhlari matni</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {currentValue.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClear}
-                disabled={isLoading || disabled}
-                className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors active:scale-[0.98] transition-transform duration-100 ease-out disabled:opacity-50 select-none"
-                title="Matnni tozalash"
-              >
-                <RotateCcw className="h-3 w-3" />
-                <span>Tozalash</span>
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Textarea Area */}
-        <div className="p-3.5 sm:p-4">
+        <div className="relative p-3.5 sm:p-4">
           <textarea
             ref={textareaRef}
-            rows={5}
+            rows={4}
             value={currentValue}
             onChange={(e) => handleManualTextChange(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -191,14 +164,27 @@ export function FeedbackInput({
             aria-label="Mijoz sharhlari va fikrlari"
             className={cn(
               "w-full resize-y bg-transparent text-sm leading-relaxed text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60",
-              "min-h-[140px] max-h-[380px]"
+              "min-h-[130px] max-h-[360px]"
             )}
           />
+
+          {currentValue.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={isLoading || disabled}
+              className="absolute top-3.5 right-3.5 inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-medium text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors active:scale-[0.98] transition-transform duration-100 ease-out disabled:opacity-50 select-none"
+              title="Matnni tozalash"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>Tozalash</span>
+            </button>
+          )}
         </div>
 
-        {/* Footer Bar: Tabular-nums Counter & Emil Kowalski CTA */}
-        <div className="flex flex-col gap-2.5 border-t border-slate-100 bg-slate-50/60 px-3.5 py-2.5 sm:px-4 sm:py-3 sm:flex-row sm:items-center sm:justify-between rounded-b-xl">
-          {/* Character & Word Statistics in tabular-nums */}
+        {/* Action & Stats Footer */}
+        <div className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50/60 px-3.5 py-2.5 sm:px-4 sm:flex-row sm:items-center sm:justify-between rounded-b-xl">
+          {/* Tabular-nums Stats */}
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
             <span
               className={cn(
@@ -210,22 +196,6 @@ export function FeedbackInput({
             </span>
             <span className="text-slate-300">·</span>
             <span className="font-mono tabular-nums text-[11px] text-slate-500">
-              Qolgan:{" "}
-              <span
-                className={cn(
-                  "font-medium",
-                  stats.remaining < 100 && stats.remaining > 0
-                    ? "text-amber-600"
-                    : stats.remaining === 0
-                    ? "text-rose-600"
-                    : "text-slate-700"
-                )}
-              >
-                {new Intl.NumberFormat("en-US").format(stats.remaining)}
-              </span>
-            </span>
-            <span className="text-slate-300 hidden sm:inline">·</span>
-            <span className="font-mono tabular-nums text-[11px] text-slate-500 hidden sm:inline">
               {stats.words} ta so&apos;z
             </span>
 
@@ -243,7 +213,7 @@ export function FeedbackInput({
             )}
           </div>
 
-          {/* Action Area: Keyboard Hint & CTA Button */}
+          {/* Shortcut & CTA */}
           <div className="flex items-center justify-end gap-3">
             <div className="hidden sm:inline-flex items-center gap-1 text-[11px] text-slate-400 font-mono select-none">
               <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 shadow-2xs text-slate-600 font-sans text-[10px]">
@@ -255,13 +225,12 @@ export function FeedbackInput({
               </kbd>
             </div>
 
-            {/* Zero Layout Shift CTA Button with Emil Kowalski Physics */}
             <button
               type="button"
               onClick={onAnalyze}
               disabled={!canSubmit}
               className={cn(
-                "inline-flex h-9 w-full sm:w-[160px] items-center justify-center gap-2 rounded-lg px-4 text-xs font-semibold tracking-tight text-white select-none transition-colors duration-150",
+                "inline-flex h-9 w-full sm:w-[150px] items-center justify-center gap-2 rounded-lg px-4 text-xs font-semibold tracking-tight text-white select-none transition-colors duration-150",
                 "active:scale-[0.98] transition-transform duration-100 ease-out",
                 "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 focus-visible:ring-offset-1",
                 canSubmit
@@ -285,9 +254,8 @@ export function FeedbackInput({
         </div>
       </div>
 
-      {/* Validation Error Alert if Passed */}
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
+        <div className="flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs text-rose-700">
           <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
           <span>{error}</span>
         </div>

@@ -21,3 +21,4 @@
 |---|---|---|---|
 | 2026-10-02 | `2026-10-02-customer-feedback-ai` | сдан | Mijoz fikrlarini AI orqali tahlil qiluvchi full-stack SaaS platformasi (Next.js, Tailwind, Gemini/OpenAI/Fallback, 33 test) |
 | 2026-10-02 | `2026-10-02-feedback-deep-redesign` | сдан | Linear/Raycast darajasidagi chuqur redizayn, 5-soniyalik qaror qabul qilish bloki, 4 ta preset, tabular-nums va Emil Kowalski fizikasi, 44 unit va 4 Playwright E2E test |
+| 2026-10-02 | `2026-10-02-linear-ui-and-figma-mcp` | сдан | AI-slop tozalash, Linear/Raycast UI, Figma MCP sozlash, chip-presetlar, Playwright E2E va build muvaffaqiyatli |

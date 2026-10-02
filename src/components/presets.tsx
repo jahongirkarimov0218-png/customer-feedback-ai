@@ -24,7 +24,7 @@ export interface FeedbackPreset {
 export const FEEDBACK_PRESETS: FeedbackPreset[] = [
   {
     id: "ecommerce",
-    title: "E-Commerce & Retail",
+    title: "E-Commerce",
     badge: "E-Commerce",
     iconName: "ShoppingBag",
     icon: "ShoppingBag",
@@ -34,7 +34,7 @@ export const FEEDBACK_PRESETS: FeedbackPreset[] = [
   },
   {
     id: "b2b-saas",
-    title: "B2B SaaS Platform",
+    title: "B2B SaaS",
     badge: "B2B SaaS",
     iconName: "CloudCog",
     icon: "CloudCog",
@@ -44,7 +44,7 @@ export const FEEDBACK_PRESETS: FeedbackPreset[] = [
   },
   {
     id: "fintech",
-    title: "Fintech & Mobile App",
+    title: "Fintech",
     badge: "Fintech",
     iconName: "Smartphone",
     icon: "Smartphone",
@@ -54,7 +54,7 @@ export const FEEDBACK_PRESETS: FeedbackPreset[] = [
   },
   {
     id: "service-restaurant",
-    title: "Service Marketplace",
+    title: "Marketplace",
     badge: "Marketplace",
     iconName: "UtensilsCrossed",
     icon: "UtensilsCrossed",
@@ -85,83 +85,43 @@ export function Presets({
   className,
 }: PresetsProps) {
   return (
-    <div className={cn("space-y-2.5", className)}>
-      <div className="flex items-center justify-between">
-        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-          Sanoat namunalari (Industry Scenarios)
-        </label>
-        <span className="text-[11px] text-slate-400 font-medium">1-klik bilan sinash</span>
-      </div>
+    <div className={cn("flex flex-wrap items-center gap-2", className)}>
+      <span className="text-xs font-medium text-slate-500 mr-1 select-none">
+        Namunalar:
+      </span>
 
-      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-        {FEEDBACK_PRESETS.map((preset) => {
-          const Icon = PRESET_ICONS[preset.iconName] || ShoppingBag;
-          const isActive = activePresetId === preset.id;
+      {FEEDBACK_PRESETS.map((preset) => {
+        const Icon = PRESET_ICONS[preset.iconName] || ShoppingBag;
+        const isActive = activePresetId === preset.id;
 
-          return (
-            <button
-              key={preset.id}
-              type="button"
-              disabled={disabled}
-              onClick={() => onSelectPreset(preset)}
-              aria-pressed={isActive}
-              aria-label={`Sanoat namunasi: ${preset.title}`}
-              className={cn(
-                "group relative flex flex-col items-start justify-between rounded-xl border p-3 text-left select-none transition-all duration-150",
-                "active:scale-[0.98] transition-transform duration-100 ease-out",
-                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 focus-visible:ring-offset-1",
-                isActive
-                  ? "border-slate-900 bg-slate-900 text-white shadow-xs"
-                  : "border-slate-200/90 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-900 shadow-2xs",
-                disabled && "cursor-not-allowed opacity-50 active:scale-100"
-              )}
-            >
-              <div className="w-full">
-                <div className="flex w-full items-center justify-between mb-2">
-                  <div
-                    className={cn(
-                      "flex h-6 w-6 items-center justify-center rounded-md transition-colors",
-                      isActive
-                        ? "bg-slate-800 text-emerald-400"
-                        : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
-                    )}
-                  >
-                    <Icon className="h-3.5 w-3.5" />
-                  </div>
-                  <span
-                    className={cn(
-                      "rounded px-1.5 py-0.5 text-[10px] font-medium tracking-tight",
-                      isActive
-                        ? "bg-slate-800 text-slate-200"
-                        : "bg-slate-100 text-slate-600"
-                    )}
-                  >
-                    {preset.badge}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-1 text-xs font-semibold leading-tight">
-                  <span className={isActive ? "text-white" : "text-slate-900"}>
-                    {preset.title}
-                  </span>
-                  {isActive && (
-                    <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 inline-block" />
-                  )}
-                </div>
-
-                <p
-                  className={cn(
-                    "mt-1.5 line-clamp-2 text-[11px] leading-relaxed",
-                    isActive ? "text-slate-300" : "text-slate-500"
-                  )}
-                >
-                  {preset.summary}
-                </p>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+        return (
+          <button
+            key={preset.id}
+            type="button"
+            disabled={disabled}
+            onClick={() => onSelectPreset(preset)}
+            aria-pressed={isActive}
+            aria-label={`Namuna: ${preset.title}`}
+            title={preset.summary}
+            className={cn(
+              "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium select-none transition-all duration-150",
+              "active:scale-[0.98] transition-transform duration-100 ease-out",
+              "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-slate-900 focus-visible:ring-offset-1",
+              isActive
+                ? "border-slate-900 bg-slate-900 text-white shadow-2xs"
+                : "border-slate-200/90 bg-white hover:bg-slate-50 hover:border-slate-300 text-slate-700 shadow-2xs",
+              disabled && "cursor-not-allowed opacity-50 active:scale-100"
+            )}
+          >
+            {isActive ? (
+              <Check className="h-3 w-3 text-emerald-400 shrink-0" />
+            ) : (
+              <Icon className="h-3 w-3 text-slate-400 group-hover:text-slate-600 shrink-0" />
+            )}
+            <span>{preset.title}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

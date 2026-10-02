@@ -1,24 +1,22 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Founder-Grade Customer Feedback Intelligence E2E", () => {
-  test("Complete product flow: preset -> analysis -> insights -> evidence modal -> priority matrix", async ({
+  test("Complete product flow: chip preset -> analysis -> insights -> evidence modal -> priority matrix", async ({
     page,
   }) => {
     // 1. Visit homepage
     await page.goto("/");
     await expect(page).toHaveTitle(/Customer Feedback|Mijoz/i);
 
-    // 2. Verify founder-first problem positioning (Outcome > Tech)
+    // 2. Verify concise outcome-focused Hero H1 & Subtitle (Raycast & Linear style)
     const heroHeading = page.locator("h1");
-    await expect(heroHeading).toContainText("Mijoz fikrlari tarqoq bo‘lganda");
+    await expect(heroHeading).toContainText("Mijoz fikrlarini ustuvor vazifalarga aylantiring");
 
-    // Value pipeline verification
-    await expect(page.locator("text=Mahsulot oqimi:")).toBeVisible();
-    await expect(page.locator("text=1. Xom Feedback")).toBeVisible();
-    await expect(page.locator("text=5. Ustuvor Harakat")).toBeVisible();
+    const heroSubtitle = page.locator("text=Tarqoq sharhlardan tizimli muammolarni ajrating");
+    await expect(heroSubtitle).toBeVisible();
 
-    // 3. Select a preset (E-Commerce preset)
-    const ecommercePreset = page.locator("button:has-text('E-Commerce & Retail')");
+    // 3. Select a preset (E-Commerce chip)
+    const ecommercePreset = page.locator("button[aria-label='Namuna: E-Commerce']");
     await expect(ecommercePreset).toBeVisible();
     await ecommercePreset.click();
 
@@ -70,7 +68,6 @@ test.describe("Founder-Grade Customer Feedback Intelligence E2E", () => {
     const highFilterBtn = page.locator("button:has-text('Yuqori')").first();
     if (await highFilterBtn.isVisible()) {
       await highFilterBtn.click();
-      // Should filter rows
       await page.waitForTimeout(200);
     }
   });
