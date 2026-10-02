@@ -1,7 +1,7 @@
 window.STATE =
 {
   "slug": "customer-feedback-ai",
-  "dir": "2026-10-02-customer-feedback-ai--wip",
+  "dir": "2026-10-02-customer-feedback-ai",
   "title": "Mijoz fikrlarini AI orqali tahlil qilish platformasi",
   "mode": "full",
   "depth": "normal",
@@ -11,20 +11,20 @@ window.STATE =
   "memoryFile": "AGENTS.md",
   "skillDir": "C:/Users/user/.gemini/config/skills/autopilot",
   "startedAt": "2026-10-02T08:51:15+05:00",
-  "updatedAt": "2026-10-02T08:55:00+05:00",
-  "finishedAt": null,
+  "updatedAt": "2026-10-02T09:18:50+05:00",
+  "finishedAt": "2026-10-02T09:18:50+05:00",
   "stages": [
     { "id": "preflight", "status": "done", "startedAt": "2026-10-02T08:51:15+05:00", "finishedAt": "2026-10-02T08:51:45+05:00" },
     { "id": "manifest",  "status": "done", "startedAt": "2026-10-02T08:51:45+05:00", "finishedAt": "2026-10-02T08:52:10+05:00" },
     { "id": "briefing",  "status": "skipped", "note": "полный автомат — самобрифинг" },
     { "id": "spec",      "status": "done", "startedAt": "2026-10-02T08:52:10+05:00", "finishedAt": "2026-10-02T08:53:00+05:00" },
     { "id": "plan",      "status": "done", "startedAt": "2026-10-02T08:53:00+05:00", "finishedAt": "2026-10-02T08:54:00+05:00" },
-    { "id": "build",     "status": "active", "startedAt": "2026-10-02T08:54:00+05:00" },
-    { "id": "review",    "status": "pending" },
-    { "id": "final",     "status": "pending" }
+    { "id": "build",     "status": "done", "startedAt": "2026-10-02T08:54:00+05:00", "finishedAt": "2026-10-02T09:15:40+05:00", "note": "5 из 5 тасков готовы" },
+    { "id": "review",    "status": "done", "startedAt": "2026-10-02T09:15:40+05:00", "finishedAt": "2026-10-02T09:18:00+05:00" },
+    { "id": "final",     "status": "done", "startedAt": "2026-10-02T09:18:00+05:00", "finishedAt": "2026-10-02T09:18:50+05:00" }
   ],
   "requirements": {
-    "total": 12, "done": 0, "inTicket": 12, "inSpec": 0,
+    "total": 12, "done": 12, "inTicket": 0, "inSpec": 0,
     "placeholder": 0, "deferred": 0, "dropped": 0
   },
   "tickets": [
@@ -35,8 +35,11 @@ window.STATE =
       "blockedBy": [],
       "wave": 1,
       "zone": ["src/types/", "src/app/layout.tsx", "tailwind.config.ts"],
-      "status": "in-progress",
+      "status": "done",
       "startedAt": "2026-10-02T08:55:00+05:00",
+      "finishedAt": "2026-10-02T08:58:45+05:00",
+      "commit": "fb3a7c6",
+      "tests": "3 passed, build clean",
       "retries": 0,
       "repairs": 0,
       "handoffs": 0
@@ -48,7 +51,11 @@ window.STATE =
       "blockedBy": ["01"],
       "wave": 2,
       "zone": ["src/app/api/analyze/", "src/lib/analyzer/"],
-      "status": "pending",
+      "status": "done",
+      "startedAt": "2026-10-02T08:59:00+05:00",
+      "finishedAt": "2026-10-02T09:04:14+05:00",
+      "commit": "a710cf4",
+      "tests": "7 passed, route 200/400 verified",
       "retries": 0,
       "repairs": 0,
       "handoffs": 0
@@ -60,7 +67,11 @@ window.STATE =
       "blockedBy": ["01"],
       "wave": 2,
       "zone": ["src/components/feedback-input.tsx", "src/components/presets.tsx"],
-      "status": "pending",
+      "status": "done",
+      "startedAt": "2026-10-02T08:59:00+05:00",
+      "finishedAt": "2026-10-02T09:04:17+05:00",
+      "commit": "99612cd",
+      "tests": "6 passed, 4 presets verified",
       "retries": 0,
       "repairs": 0,
       "handoffs": 0
@@ -72,7 +83,11 @@ window.STATE =
       "blockedBy": ["02", "03"],
       "wave": 3,
       "zone": ["src/components/results/", "src/app/page.tsx"],
-      "status": "pending",
+      "status": "done",
+      "startedAt": "2026-10-02T09:04:30+05:00",
+      "finishedAt": "2026-10-02T09:11:48+05:00",
+      "commit": "56614bf",
+      "tests": "11 passed, filter & export verified",
       "retries": 0,
       "repairs": 0,
       "handoffs": 0
@@ -84,18 +99,22 @@ window.STATE =
       "blockedBy": ["04"],
       "wave": 4,
       "zone": ["tests/", "vercel.json", "README.md"],
-      "status": "pending",
+      "status": "done",
+      "startedAt": "2026-10-02T09:12:00+05:00",
+      "finishedAt": "2026-10-02T09:15:40+05:00",
+      "commit": "505fb4f",
+      "tests": "6 passed (33 total), build clean",
       "retries": 0,
       "repairs": 0,
       "handoffs": 0
     }
   ],
   "singlePass": null,
-  "tests": null,
+  "tests": 33,
   "debt": { "placeholders": [], "assumptions": ["ASSUMPTION: Built-in semantic NLP fallback allows full zero-config demo experience when no AI API keys are configured"], "emptyEnv": ["GEMINI_API_KEY", "OPENAI_API_KEY"] },
   "additions": [],
   "coverage": { "findings": 0, "status": "clean" },
   "concerns": [],
   "reviewers": { "manifestSpec": null, "craft": null },
-  "blind": null
+  "blind": { "verdict": "clean", "drifts": 0, "passedRequirements": 12 }
 }
