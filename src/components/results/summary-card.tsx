@@ -5,13 +5,12 @@ import {
   Activity,
   Copy,
   Check,
-  Flame,
   ArrowRight,
   ShieldAlert,
   Layers,
   Quote,
   Target,
-  Zap,
+  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnalysisResponse, SentimentData } from "@/types/analyzer";
@@ -63,7 +62,6 @@ export function SummaryCard({
   const [copiedAction, setCopiedAction] = useState(false);
 
   const healthScore = calculateHealthScore(data.sentiment);
-  const providerLabel = formatProviderName(data.meta?.provider);
   const totalWords = data.meta?.totalWords || 0;
   const criticalCount = data.problems.filter((p) => p.priority === "high").length;
   const evidenceCount =
@@ -115,142 +113,76 @@ export function SummaryCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-slate-200/90 bg-slate-100/70 p-1.5 sm:p-2 shadow-sm space-y-2",
+        "rounded-xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden",
         className
       )}
     >
-      {/* 1. Burning Issue Spotlight (P0 Banner) if present */}
-      {burningIssue && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50/90 p-4 sm:p-5 text-slate-900 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3.5">
-              <div className="rounded-lg bg-rose-100 p-2 text-rose-700 border border-rose-200 shrink-0 mt-0.5">
-                <Flame className="h-5 w-5" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-rose-200/80 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-rose-900 border border-rose-300">
-                    Birlamchi Kritik Xavf (#1 Burning Issue)
-                  </span>
-                  <span className="text-xs text-rose-700 font-mono font-semibold tabular-nums">
-                    ~{burningIssue.affectedPercentage}% mijozlar e&apos;tirozi
-                  </span>
-                </div>
-                <h4 className="text-base font-bold text-slate-950 sm:text-lg tracking-tight">
-                  {burningIssue.title}
-                </h4>
-                <p className="text-xs text-rose-950/80 leading-relaxed max-w-2xl">
-                  <strong className="font-semibold text-rose-900">Biznes ta&apos;siri:</strong> {burningIssue.impact}
-                </p>
-              </div>
+      {/* 1. Header: Executive Brief & Direct Actions */}
+      <div className="border-b border-slate-100 p-5 sm:p-6 bg-slate-50/30">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-800 border border-slate-200/70 shrink-0">
+              <Target className="h-4 w-4" />
             </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
+                  Executive Brief
+                </h3>
+                {criticalCount > 0 && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-medium text-rose-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                    P0 Diqqat markazida
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-500">
+                Mijoz fikrlari tahlili va strategik xulosalar
+              </p>
+            </div>
+          </div>
 
-            {onScrollToMatrix && (
-              <button
-                type="button"
-                onClick={onScrollToMatrix}
-                className="self-start sm:self-center inline-flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-2 text-xs font-semibold transition-colors shrink-0 shadow-xs active-press"
-              >
-                <span>Yechim rejasini ko&apos;rish</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+          <button
+            type="button"
+            onClick={handleCopySummary}
+            className="self-start sm:self-center inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-950 transition-all active:scale-[0.98] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            title="Xulosani nusxalash"
+          >
+            {copiedSummary ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="text-emerald-700 font-medium">Nusxalandi</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5 text-slate-400" />
+                <span>Nusxalash</span>
+              </>
             )}
-          </div>
-        </div>
-      )}
-
-      {/* 2. Executive Product Metrics Grid */}
-      <div className="rounded-xl border border-slate-200/70 bg-white p-5 sm:p-6 space-y-5 shadow-xs">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          {/* Metric 1: Health Score */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-medium">Mijoz Qoniqish Indeksi</span>
-              <Activity className="h-4 w-4 text-emerald-600" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-slate-950 font-mono tabular-nums">
-                {healthScore}
-              </span>
-              <span className="text-xs text-slate-400 font-mono">/ 100</span>
-            </div>
-            <p className="text-[11px] font-medium">
-              {healthScore >= 70 ? (
-                <span className="text-emerald-700">● Barqaror va ijobiy</span>
-              ) : healthScore >= 45 ? (
-                <span className="text-amber-700">● Diqqat talab etiladi</span>
-              ) : (
-                <span className="text-rose-700">● Kritik yo&apos;qotish xavfi</span>
-              )}
-            </p>
-          </div>
-
-          {/* Metric 2: Root Causes */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-medium">Ildiz Muammolar</span>
-              <Layers className="h-4 w-4 text-amber-600" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-slate-950 font-mono tabular-nums">
-                {data.problems.length}
-              </span>
-              <span className="text-xs text-slate-500">toifa</span>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              Semantik klasterlar
-            </p>
-          </div>
-
-          {/* Metric 3: Critical Risks */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-medium">Kritik Xatarlar (High)</span>
-              <ShieldAlert className="h-4 w-4 text-rose-600" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-rose-600 font-mono tabular-nums">
-                {criticalCount}
-              </span>
-              <span className="text-xs text-slate-500">shoshilinch</span>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              P0 / Churn to&apos;siqlari
-            </p>
-          </div>
-
-          {/* Metric 4: Customer Evidence Quotes */}
-          <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="text-xs font-medium">Mijoz Dalillari</span>
-              <Quote className="h-4 w-4 text-indigo-600" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold tracking-tight text-slate-950 font-mono tabular-nums">
-                {evidenceCount}
-              </span>
-              <span className="text-xs text-slate-500">iqtibos</span>
-            </div>
-            <p className="text-[11px] text-slate-500 font-mono tabular-nums">
-              {totalWords} ta so&apos;zdan
-            </p>
-          </div>
+          </button>
         </div>
 
-        {/* 3. Action Bar: Konkret tavsiya etilgan harakat (What to do right now / 5-second decision) */}
-        <div className="rounded-xl border border-slate-900 bg-slate-900 p-4 sm:p-5 text-white shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Executive Brief Text */}
+        <p className="mt-4 text-sm leading-relaxed text-slate-700">
+          {data.summary}
+        </p>
+
+        {/* 2. Primary Recommended Action (Integrated Linear Callout) */}
+        <div className="mt-4 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
             <div className="space-y-1 max-w-2xl">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300 border border-emerald-500/30">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                   Konkret tavsiya etilgan harakat
                 </span>
-                <span className="text-[11px] text-slate-400 font-medium">
-                  Birinchi navbatdagi qadam
-                </span>
+                {burningIssue && (
+                  <span className="text-[11px] text-slate-400">
+                    · {burningIssue.title}
+                  </span>
+                )}
               </div>
-              <p className="text-sm sm:text-base font-semibold text-slate-100 leading-snug">
+              <p className="text-xs sm:text-sm font-medium text-slate-900 leading-snug">
                 {primaryAction}
               </p>
             </div>
@@ -259,13 +191,13 @@ export function SummaryCard({
               <button
                 type="button"
                 onClick={handleCopyAction}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors active-press"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all active:scale-[0.98] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]"
                 title="Tavsiya etilgan harakatni nusxalash"
               >
                 {copiedAction ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-emerald-400" />
-                    <span className="text-emerald-400 font-semibold">Nusxalandi</span>
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-emerald-700 font-medium">Nusxalandi</span>
                   </>
                 ) : (
                   <>
@@ -279,7 +211,7 @@ export function SummaryCard({
                 <button
                   type="button"
                   onClick={onScrollToMatrix}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 text-xs font-semibold transition-colors active-press shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 text-white px-3 py-1.5 text-xs font-medium hover:bg-slate-800 transition-all active:scale-[0.98] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xs"
                 >
                   <span>Matritsani ko&apos;rish</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -288,51 +220,87 @@ export function SummaryCard({
             </div>
           </div>
         </div>
+      </div>
 
-        {/* 4. Executive Briefing Text */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5 space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-emerald-600" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                Rahbariyat va Jamoa Uchun Xulosa (Executive Brief)
-              </h4>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleCopySummary}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-950 transition-colors active-press"
-            >
-              {copiedSummary ? (
-                <>
-                  <Check className="h-3.5 w-3.5 text-emerald-600" />
-                  <span className="text-emerald-700 font-semibold">Nusxalandi</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="h-3.5 w-3.5 text-slate-500" />
-                  <span>Xulosani nusxalash</span>
-                </>
-              )}
-            </button>
+      {/* 3. Executive Metrics Grid (Linear style 4-column strip) */}
+      <div className="grid grid-cols-2 divide-y divide-slate-100 sm:grid-cols-4 sm:divide-y-0 sm:divide-x border-t border-slate-100 bg-slate-50/30">
+        {/* Metric 1: Health Score */}
+        <div className="p-4 sm:p-5 space-y-1">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-xs font-medium">Mijoz Qoniqish Indeksi</span>
+            <Activity className="h-4 w-4 text-emerald-600" />
           </div>
-
-          <p className="text-sm leading-relaxed text-slate-700">
-            {data.summary}
-          </p>
-
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/80 pt-3 text-[11px] text-slate-500">
-            <div className="flex items-center gap-2">
-              <span>Tahlil dvigateli:</span>
-              <span className="rounded bg-slate-200/80 px-2 py-0.5 text-slate-800 font-medium font-mono">
-                {providerLabel}
-              </span>
-            </div>
-            <span className="font-medium text-slate-600">
-              Dalillarga asoslangan real tahlil natijalari
+          <div className="flex items-baseline gap-1.5 pt-1">
+            <span className="text-2xl font-semibold tracking-tight text-slate-950 font-mono tabular-nums">
+              {healthScore}
             </span>
+            <span className="text-xs text-slate-400 font-mono">/ 100</span>
           </div>
+          <p className="text-[11px] font-medium pt-0.5">
+            {healthScore >= 70 ? (
+              <span className="text-emerald-700">Barqaror va ijobiy</span>
+            ) : healthScore >= 45 ? (
+              <span className="text-amber-700">Diqqat talab etiladi</span>
+            ) : (
+              <span className="text-rose-700">Kritik xavf</span>
+            )}
+          </p>
+        </div>
+
+        {/* Metric 2: Root Causes */}
+        <div className="p-4 sm:p-5 space-y-1">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-xs font-medium">Ildiz Muammolar</span>
+            <Layers className="h-4 w-4 text-amber-600" />
+          </div>
+          <div className="flex items-baseline gap-1.5 pt-1">
+            <span className="text-2xl font-semibold tracking-tight text-slate-950 font-mono tabular-nums">
+              {data.problems.length}
+            </span>
+            <span className="text-xs text-slate-500 font-medium">toifa</span>
+          </div>
+          <p className="text-[11px] text-slate-500 pt-0.5">
+            Semantik klasterlar
+          </p>
+        </div>
+
+        {/* Metric 3: Critical Risks */}
+        <div className="p-4 sm:p-5 space-y-1">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-xs font-medium">Kritik Xatarlar</span>
+            <ShieldAlert className={cn("h-4 w-4", criticalCount > 0 ? "text-rose-600" : "text-slate-400")} />
+          </div>
+          <div className="flex items-baseline gap-1.5 pt-1">
+            <span
+              className={cn(
+                "text-2xl font-semibold tracking-tight font-mono tabular-nums",
+                criticalCount > 0 ? "text-rose-600" : "text-slate-950"
+              )}
+            >
+              {criticalCount}
+            </span>
+            <span className="text-xs text-slate-500 font-medium">P0 shoshilinch</span>
+          </div>
+          <p className="text-[11px] text-slate-500 pt-0.5">
+            {criticalCount > 0 ? "Daromad / Churn xavfi" : "Kritik to'siq yo'q"}
+          </p>
+        </div>
+
+        {/* Metric 4: Customer Evidence Quotes */}
+        <div className="p-4 sm:p-5 space-y-1">
+          <div className="flex items-center justify-between text-slate-500">
+            <span className="text-xs font-medium">Mijoz Dalillari</span>
+            <Quote className="h-4 w-4 text-slate-600" />
+          </div>
+          <div className="flex items-baseline gap-1.5 pt-1">
+            <span className="text-2xl font-semibold tracking-tight text-slate-950 font-mono tabular-nums">
+              {evidenceCount}
+            </span>
+            <span className="text-xs text-slate-500 font-medium">iqtibos</span>
+          </div>
+          <p className="text-[11px] text-slate-500 pt-0.5 font-mono tabular-nums">
+            {totalWords} ta so&apos;zdan
+          </p>
         </div>
       </div>
     </div>

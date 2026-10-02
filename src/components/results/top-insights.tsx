@@ -122,7 +122,7 @@ export function getInsightRiskLevel(
     index === 0
   ) {
     return {
-      label: "Yuqori xavf (P0)",
+      label: "P0 Kritik",
       badgeClass: "border-rose-200 bg-rose-50 text-rose-700",
     };
   }
@@ -135,13 +135,13 @@ export function getInsightRiskLevel(
     index === 1
   ) {
     return {
-      label: "O'rta xavf (P1)",
+      label: "P1 O'rta",
       badgeClass: "border-amber-200 bg-amber-50 text-amber-700",
     };
   }
 
   return {
-    label: "Past xavf (P2)",
+    label: "P2 Past",
     badgeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
   };
 }
@@ -158,11 +158,11 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-700 border border-amber-100">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-800 border border-slate-200/70 shrink-0">
             <Lightbulb className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 tracking-tight">
+            <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
               Top 3 Strategik Xulosalar
             </h3>
             <p className="text-xs text-slate-500">
@@ -171,16 +171,16 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
           </div>
         </div>
 
-        <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-slate-500 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          Strategik Klasterlar
+        <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-slate-500 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-md">
+          <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+          Prioritized
         </span>
       </div>
 
-      {/* 3 Bento Cards with Double-Bezel Containment */}
+      {/* 3 Clean Linear-Style Bento Cards (No double bezels) */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {items.slice(0, 3).map((insight, idx) => {
-          const numberLabel = `#0${idx + 1}`;
+          const numberLabel = `0${idx + 1}`;
           const impact = getInsightImpactTag(insight, idx);
           const risk = getInsightRiskLevel(insight, idx);
           const ImpactIcon = impact.icon;
@@ -188,67 +188,59 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
           return (
             <div
               key={idx}
-              className="group rounded-2xl border border-slate-200/90 bg-slate-100/70 p-1.5 shadow-sm transition-all duration-150 hover:bg-slate-200/60"
+              className="group rounded-xl border border-slate-200/80 bg-white p-5 flex flex-col justify-between shadow-2xs hover:border-slate-300 transition-all duration-150"
             >
-              <div className="h-full rounded-xl border border-slate-200/70 bg-white p-5 flex flex-col justify-between shadow-xs">
-                <div>
-                  {/* Top badges: Index, Category, Priority/Risk */}
-                  <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="inline-flex items-center justify-center rounded-md bg-slate-950 px-2 py-0.5 text-xs font-mono font-bold text-white shadow-2xs tabular-nums">
-                        {numberLabel}
-                      </span>
-
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-tight",
-                          impact.badgeClass
-                        )}
-                      >
-                        <ImpactIcon className="h-3 w-3" />
-                        <span>{impact.tag}</span>
-                      </span>
-                    </div>
-
-                    <span
-                      className={cn(
-                        "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold font-mono",
-                        risk.badgeClass
-                      )}
-                    >
-                      {risk.label}
+              <div>
+                {/* Top Row: Clean Index + Category + Priority */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-semibold text-slate-400 tabular-nums">
+                      {numberLabel}
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-700">
+                      <ImpactIcon className="h-3 w-3 text-slate-500" />
+                      <span>{impact.tag}</span>
                     </span>
                   </div>
 
-                  {/* Insight Title */}
-                  <h4 className="text-sm font-bold text-slate-950 leading-snug tracking-tight">
-                    {insight.title}
-                  </h4>
-
-                  {/* Description */}
-                  <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                    {insight.description}
-                  </p>
-
-                  {/* Customer Verbatim Quote if available */}
-                  {insight.evidenceQuote && (
-                    <div className="mt-3.5 rounded-lg border border-slate-200/70 bg-slate-50/90 p-3 text-[11px] text-slate-600 leading-relaxed">
-                      <span className="font-semibold text-slate-900 mr-1 not-italic">
-                        Mijoz iqtibosi:
-                      </span>
-                      &ldquo;{insight.evidenceQuote}&rdquo;
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Strategic Action Indicator */}
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <span>Strategik tavsiya</span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium font-mono",
+                      risk.badgeClass
+                    )}
+                  >
+                    {risk.label}
                   </span>
-                  <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </div>
+
+                {/* Insight Title */}
+                <h4 className="mt-3 text-sm font-semibold text-slate-950 leading-snug tracking-tight">
+                  {insight.title}
+                </h4>
+
+                {/* Description */}
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
+                  {insight.description}
+                </p>
+
+                {/* Customer Verbatim Quote if available */}
+                {insight.evidenceQuote && (
+                  <div className="mt-3 rounded-md border-l-2 border-slate-300 bg-slate-50/60 py-2 px-2.5 text-[11px] text-slate-600 leading-relaxed italic">
+                    <span className="font-medium text-slate-900 not-italic mr-1">
+                      Mijoz iqtibosi:
+                    </span>
+                    &ldquo;{insight.evidenceQuote}&rdquo;
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Strategic Action Indicator */}
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                  <span>Tavsiya etilgan qadam</span>
+                </span>
+                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-950 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150" />
               </div>
             </div>
           );
