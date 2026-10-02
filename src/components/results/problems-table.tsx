@@ -47,16 +47,30 @@ export function filterProblemsByPriority(
 }
 
 /**
- * Generate CSV representation of problems
+/**
+ * Safe CSV Cell Sanitizer preventing Formula Injection (CWE-1236).
+ * Prepend single quote (') if the field starts with =, +, -, @, \t, \r, or %
+ */
+export function sanitizeCSVCell(value: string | undefined | null): string {
+  if (!value) return '""';
+  let escaped = String(value).replace(/"/g, '""');
+  if (/^[=+\-@\t\r%]/.test(escaped)) {
+    escaped = `'${escaped}`;
+  }
+  return `"${escaped}"`;
+}
+
+/**
+ * Generate CSV representation of problems with formula injection defense
  */
 export function exportProblemsToCSV(problems: ProblemSolutionItem[]): string {
   const header = "Muammo,Ustuvorlik,Yechim,Biznes Ta'siri,Tavsiya";
   const rows = (problems || []).map((p) => {
-    const escapedProblem = `"${(p.problem || "").replace(/"/g, '""')}"`;
-    const escapedPriority = `"${p.priority || ""}"`;
-    const escapedSolution = `"${(p.solution || "").replace(/"/g, '""')}"`;
-    const escapedImpact = `"${(p.impact || "").replace(/"/g, '""')}"`;
-    const escapedAction = `"${(p.actionItem || p.solution || "").replace(/"/g, '""')}"`;
+    const escapedProblem = sanitizeCSVCell(p.problem);
+    const escapedPriority = sanitizeCSVCell(p.priority);
+    const escapedSolution = sanitizeCSVCell(p.solution);
+    const escapedImpact = sanitizeCSVCell(p.impact);
+    const escapedAction = sanitizeCSVCell(p.actionItem || p.solution);
     return `${escapedProblem},${escapedPriority},${escapedSolution},${escapedImpact},${escapedAction}`;
   });
 
