@@ -86,6 +86,13 @@ export interface AnalysisRequest {
 - `src/components/results/index.ts`: Barcha natija komponentlari eksporti
 - `src/app/page.tsx`: Asosiy Next.js sahifasi, to'liq end-to-end integratsiya
 
+## Из таска 05 — Тестирование, Vercel и документация
+- `vercel.json`: Vercel deploy konfiguratsiyasi
+- `.env.example`: Server muhit o'zgaruvchilari bo'yicha qo'llanma
+- `test/e2e-workflow.test.ts`: E2E integratsion testlar (33 ta umumiy test)
+- `README.md`: To'liq foydalanish va deploy qo'llanmasi
+
+
 
 
 ```
