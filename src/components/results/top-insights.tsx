@@ -5,7 +5,6 @@ import {
   Lightbulb,
   TrendingUp,
   AlertOctagon,
-  Sparkles,
   Zap,
   Target,
   ArrowUpRight,
@@ -22,6 +21,11 @@ export interface ImpactTagInfo {
   tag: string;
   badgeClass: string;
   icon: React.ComponentType<{ className?: string }>;
+}
+
+export interface RiskLevelInfo {
+  label: string;
+  badgeClass: string;
 }
 
 /**
@@ -100,6 +104,48 @@ export function getInsightImpactTag(
   return defaults[index % defaults.length];
 }
 
+/**
+ * Derives priority and risk tier tag for insight
+ */
+export function getInsightRiskLevel(
+  insight: InsightItem,
+  index: number
+): RiskLevelInfo {
+  const text = `${insight?.title || ""} ${insight?.description || ""}`.toLowerCase();
+
+  if (
+    text.includes("ketib") ||
+    text.includes("churn") ||
+    text.includes("yo'qotish") ||
+    text.includes("xavf") ||
+    text.includes("norozilik") ||
+    index === 0
+  ) {
+    return {
+      label: "Yuqori xavf (P0)",
+      badgeClass: "border-rose-200 bg-rose-50 text-rose-700",
+    };
+  }
+
+  if (
+    text.includes("daromad") ||
+    text.includes("revenue") ||
+    text.includes("narx") ||
+    text.includes("sekin") ||
+    index === 1
+  ) {
+    return {
+      label: "O'rta xavf (P1)",
+      badgeClass: "border-amber-200 bg-amber-50 text-amber-700",
+    };
+  }
+
+  return {
+    label: "Past xavf (P2)",
+    badgeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  };
+}
+
 export function TopInsights({ insights, className }: TopInsightsProps) {
   const items = insights || [];
 
@@ -136,6 +182,7 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
         {items.slice(0, 3).map((insight, idx) => {
           const numberLabel = `#0${idx + 1}`;
           const impact = getInsightImpactTag(insight, idx);
+          const risk = getInsightRiskLevel(insight, idx);
           const ImpactIcon = impact.icon;
 
           return (
@@ -145,20 +192,31 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
             >
               <div className="h-full rounded-xl border border-slate-200/70 bg-white p-5 flex flex-col justify-between shadow-xs">
                 <div>
-                  {/* Top badges: Index & Impact */}
-                  <div className="flex items-center justify-between gap-2 mb-3.5">
-                    <span className="inline-flex items-center justify-center rounded-md bg-slate-950 px-2.5 py-0.5 text-xs font-mono font-bold text-white shadow-2xs">
-                      {numberLabel}
-                    </span>
+                  {/* Top badges: Index, Category, Priority/Risk */}
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 mb-3.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center justify-center rounded-md bg-slate-950 px-2 py-0.5 text-xs font-mono font-bold text-white shadow-2xs tabular-nums">
+                        {numberLabel}
+                      </span>
+
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-tight",
+                          impact.badgeClass
+                        )}
+                      >
+                        <ImpactIcon className="h-3 w-3" />
+                        <span>{impact.tag}</span>
+                      </span>
+                    </div>
 
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-tight",
-                        impact.badgeClass
+                        "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold font-mono",
+                        risk.badgeClass
                       )}
                     >
-                      <ImpactIcon className="h-3 w-3" />
-                      <span>{impact.tag}</span>
+                      {risk.label}
                     </span>
                   </div>
 
@@ -175,7 +233,9 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
                   {/* Customer Verbatim Quote if available */}
                   {insight.evidenceQuote && (
                     <div className="mt-3.5 rounded-lg border border-slate-200/70 bg-slate-50/90 p-3 text-[11px] text-slate-600 leading-relaxed">
-                      <span className="font-semibold text-slate-900 mr-1 not-italic">Mijoz iqtibosi:</span>
+                      <span className="font-semibold text-slate-900 mr-1 not-italic">
+                        Mijoz iqtibosi:
+                      </span>
                       &ldquo;{insight.evidenceQuote}&rdquo;
                     </div>
                   )}
@@ -202,4 +262,3 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
 export const InsightsList = TopInsights;
 
 export default TopInsights;
-

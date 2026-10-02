@@ -11,7 +11,7 @@ import {
   Layers,
   Quote,
   Target,
-  Sparkles,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnalysisResponse, SentimentData } from "@/types/analyzer";
@@ -59,7 +59,9 @@ export function SummaryCard({
   onCopy,
   onScrollToMatrix,
 }: SummaryCardProps) {
-  const [copied, setCopied] = useState(false);
+  const [copiedSummary, setCopiedSummary] = useState(false);
+  const [copiedAction, setCopiedAction] = useState(false);
+
   const healthScore = calculateHealthScore(data.sentiment);
   const providerLabel = formatProviderName(data.meta?.provider);
   const totalWords = data.meta?.totalWords || 0;
@@ -80,6 +82,12 @@ export function SummaryCard({
         }
       : undefined);
 
+  const primaryAction =
+    burningIssue?.action ||
+    data.problems[0]?.actionItem ||
+    data.problems[0]?.solution ||
+    "Barcha aniqlangan P0/High to'siqlar bo'yicha tezkor muhandislik rejasi tuzilsin.";
+
   const handleCopySummary = async () => {
     if (onCopy) {
       onCopy();
@@ -90,8 +98,18 @@ export function SummaryCard({
         // fallback
       }
     }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedSummary(true);
+    setTimeout(() => setCopiedSummary(false), 2000);
+  };
+
+  const handleCopyAction = async () => {
+    try {
+      await navigator.clipboard.writeText(primaryAction);
+    } catch {
+      // fallback
+    }
+    setCopiedAction(true);
+    setTimeout(() => setCopiedAction(false), 2000);
   };
 
   return (
@@ -103,32 +121,33 @@ export function SummaryCard({
     >
       {/* 1. Burning Issue Spotlight (P0 Banner) if present */}
       {burningIssue && (
-        <div className="rounded-xl border border-rose-500/20 bg-rose-950 p-4 sm:p-5 text-white shadow-xs">
+        <div className="rounded-xl border border-rose-200 bg-rose-50/90 p-4 sm:p-5 text-slate-900 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
-              <div className="rounded-lg bg-rose-500/20 p-2 text-rose-400 border border-rose-500/30 shrink-0 mt-0.5">
-                <Flame className="h-5 w-5 animate-pulse" />
+              <div className="rounded-lg bg-rose-100 p-2 text-rose-700 border border-rose-200 shrink-0 mt-0.5">
+                <Flame className="h-5 w-5" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-rose-500/20 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-rose-300 border border-rose-500/30">
+                  <span className="rounded-full bg-rose-200/80 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-rose-900 border border-rose-300">
                     Birlamchi Kritik Xavf (#1 Burning Issue)
                   </span>
-                  <span className="text-xs text-rose-300/90 font-mono tabular-nums">
+                  <span className="text-xs text-rose-700 font-mono font-semibold tabular-nums">
                     ~{burningIssue.affectedPercentage}% mijozlar e&apos;tirozi
                   </span>
                 </div>
-                <h4 className="text-base font-bold text-white sm:text-lg tracking-tight">
+                <h4 className="text-base font-bold text-slate-950 sm:text-lg tracking-tight">
                   {burningIssue.title}
                 </h4>
-                <p className="text-xs text-rose-200/90 leading-relaxed max-w-2xl">
-                  <strong className="font-semibold text-rose-300">Biznes ta&apos;siri:</strong> {burningIssue.impact}
+                <p className="text-xs text-rose-950/80 leading-relaxed max-w-2xl">
+                  <strong className="font-semibold text-rose-900">Biznes ta&apos;siri:</strong> {burningIssue.impact}
                 </p>
               </div>
             </div>
 
             {onScrollToMatrix && (
               <button
+                type="button"
                 onClick={onScrollToMatrix}
                 className="self-start sm:self-center inline-flex items-center gap-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-2 text-xs font-semibold transition-colors shrink-0 shadow-xs active-press"
               >
@@ -141,7 +160,7 @@ export function SummaryCard({
       )}
 
       {/* 2. Executive Product Metrics Grid */}
-      <div className="rounded-xl border border-slate-200/70 bg-white p-5 sm:p-6 space-y-6 shadow-xs">
+      <div className="rounded-xl border border-slate-200/70 bg-white p-5 sm:p-6 space-y-5 shadow-xs">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {/* Metric 1: Health Score */}
           <div className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-1">
@@ -218,7 +237,59 @@ export function SummaryCard({
           </div>
         </div>
 
-        {/* 3. Executive Briefing Text */}
+        {/* 3. Action Bar: Konkret tavsiya etilgan harakat (What to do right now / 5-second decision) */}
+        <div className="rounded-xl border border-slate-900 bg-slate-900 p-4 sm:p-5 text-white shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1 max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300 border border-emerald-500/30">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  Konkret tavsiya etilgan harakat
+                </span>
+                <span className="text-[11px] text-slate-400 font-medium">
+                  Birinchi navbatdagi qadam
+                </span>
+              </div>
+              <p className="text-sm sm:text-base font-semibold text-slate-100 leading-snug">
+                {primaryAction}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
+              <button
+                type="button"
+                onClick={handleCopyAction}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 hover:text-white transition-colors active-press"
+                title="Tavsiya etilgan harakatni nusxalash"
+              >
+                {copiedAction ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-emerald-400 font-semibold">Nusxalandi</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 text-slate-400" />
+                    <span>Nusxalash</span>
+                  </>
+                )}
+              </button>
+
+              {onScrollToMatrix && (
+                <button
+                  type="button"
+                  onClick={onScrollToMatrix}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 text-xs font-semibold transition-colors active-press shadow-xs"
+                >
+                  <span>Matritsani ko&apos;rish</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Executive Briefing Text */}
         <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5 space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -229,10 +300,11 @@ export function SummaryCard({
             </div>
 
             <button
+              type="button"
               onClick={handleCopySummary}
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-950 transition-colors active-press"
             >
-              {copied ? (
+              {copiedSummary ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-600" />
                   <span className="text-emerald-700 font-semibold">Nusxalandi</span>
@@ -266,3 +338,5 @@ export function SummaryCard({
     </div>
   );
 }
+
+export default SummaryCard;

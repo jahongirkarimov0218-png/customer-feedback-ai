@@ -2,19 +2,13 @@
 
 import React, { useState, useRef } from "react";
 import {
-  Sparkles,
-  BarChart3,
-  Lightbulb,
-  ShieldAlert,
-  CheckCircle2,
   RotateCcw,
   Layers,
   Zap,
   ArrowRight,
   TrendingUp,
-  Quote,
   Target,
-  ArrowDown,
+  Sparkles,
 } from "lucide-react";
 import { FeedbackInput } from "@/components/feedback-input";
 import { SkeletonLoader } from "@/components/skeleton-loader";
@@ -119,6 +113,10 @@ export default function HomePage() {
     setIsEvidenceModalOpen(true);
   };
 
+  const handleScrollToMatrix = () => {
+    document.getElementById("problems-matrix")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 space-y-10">
       {/* 1. Founder-First Hero Section (Problem -> Outcome -> Clarity) */}
@@ -216,7 +214,7 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={handleResetAnalysis}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-subtle hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-subtle hover:bg-slate-50 hover:text-slate-900 transition-all active-press"
               >
                 <RotateCcw className="h-3 w-3" />
                 <span>Yangi tahlil boshlash</span>
@@ -227,7 +225,10 @@ export default function HomePage() {
           {/* Row 1: Executive Summary & Health Score (7 cols) & Sentiment Breakdown (5 cols) */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-7">
-              <SummaryCard data={analysisData} />
+              <SummaryCard
+                data={analysisData}
+                onScrollToMatrix={handleScrollToMatrix}
+              />
             </div>
             <div className="lg:col-span-5">
               <SentimentCard sentiment={analysisData.sentiment} />
@@ -240,7 +241,7 @@ export default function HomePage() {
           </div>
 
           {/* Row 3: 5-Column Problems Table (Problem | Impact | Evidence | Priority | Action) */}
-          <div>
+          <div id="problems-matrix">
             <ProblemsTable
               problems={analysisData.problems}
               fullAnalysis={analysisData}
@@ -296,7 +297,7 @@ export default function HomePage() {
                     <span>Ildiz muammolarni ajratish</span>
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">
-                    Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari avtomatik aniqlanadi.
+                    Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari aniqlanadi.
                   </p>
                 </div>
                 <div className="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center gap-1.5 text-[11px] text-indigo-700 font-semibold">
