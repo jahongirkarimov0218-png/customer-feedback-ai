@@ -64,4 +64,19 @@ export interface AnalysisRequest {
 - Dizayn tizimi: Tailwind font-sans Geist/Inter, slate-900 surface, border-slate-800, emerald/amber/rose semantik ranglar
 - Test komandasi: `npm test` (Vitest), `npm run build` (Next.js build)
 
+## Из таска 02 — Движок анализа и серверный API
+- `src/lib/analyzer/fallback-engine.ts`: `analyzeFeedbackFallback(text: string): AnalysisResponse` (100% oflayn aqlli semantik tahlil)
+- `src/lib/analyzer/gemini.ts`: `analyzeWithGemini(text: string): Promise<AnalysisResponse | null>`
+- `src/lib/analyzer/openai.ts`: `analyzeWithOpenAI(text: string): Promise<AnalysisResponse | null>`
+- `src/lib/analyzer/index.ts`: `analyzeFeedback(text: string): Promise<AnalysisResponse>` (ko'p provayderli, fallback bilan kafolatlangan)
+- `src/app/api/analyze/route.ts`: `POST /api/analyze` Route Handler (400 bad request, 200 AnalysisResponse)
+
+## Из таска 03 — Ввод отзывов, пресеты и скелетоны
+
+- `src/components/presets.tsx`: `FeedbackPreset`, `FEEDBACK_PRESETS` (4 ta real sanoat keysi), `<Presets />`
+- `src/components/feedback-input.tsx`: `<FeedbackInput />`, `getFeedbackStats(text)`
+- `src/components/skeleton-loader.tsx`: `<SkeletonLoader />`, `<SummarySkeleton />`, `<SentimentSkeleton />`, `<InsightsSkeleton />`, `<ProblemsSkeleton />`
+- `src/components/error-alert.tsx`: `<ErrorAlert />`
+
+
 ```
