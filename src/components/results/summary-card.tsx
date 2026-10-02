@@ -60,6 +60,7 @@ export function SummaryCard({
 }: SummaryCardProps) {
   const [copiedSummary, setCopiedSummary] = useState(false);
   const [copiedAction, setCopiedAction] = useState(false);
+  const [copiedLinearIssue, setCopiedLinearIssue] = useState(false);
 
   const healthScore = calculateHealthScore(data.sentiment);
   const totalWords = data.meta?.totalWords || 0;
@@ -68,22 +69,25 @@ export function SummaryCard({
     data.meta?.evidenceCount ||
     data.problems.reduce((acc, p) => acc + (p.evidenceQuotes?.length || 0), 0);
 
+  const primaryProblem = data.problems[0];
   const burningIssue =
     data.burningIssue ||
     (criticalCount > 0
       ? {
-          title: data.problems[0].problem,
-          impact: data.problems[0].impact || "Mijozlar ketishi va daromad yo'qotilishi xavfi",
+          title: primaryProblem?.problem || "Kritik tizim xatosi",
+          impact: primaryProblem?.impact || "Mijozlar ketishi va daromad yo'qotilishi xavfi",
           affectedPercentage: 42,
           urgency: "critical" as const,
-          action: data.problems[0].actionItem || data.problems[0].solution,
+          action: primaryProblem?.actionItem || primaryProblem?.solution,
         }
       : undefined);
 
+  const ticketTitle = burningIssue?.title || primaryProblem?.problem || "Kritik tizim xatosi";
+  const primaryComponent = primaryProblem?.category || "Core Platform";
   const primaryAction =
     burningIssue?.action ||
-    data.problems[0]?.actionItem ||
-    data.problems[0]?.solution ||
+    primaryProblem?.actionItem ||
+    primaryProblem?.solution ||
     "Barcha aniqlangan P0/High to'siqlar bo'yicha tezkor muhandislik rejasi tuzilsin.";
 
   const handleCopySummary = async () => {
@@ -108,6 +112,23 @@ export function SummaryCard({
     }
     setCopiedAction(true);
     setTimeout(() => setCopiedAction(false), 2000);
+  };
+
+  const handleCopyLinearIssue = async () => {
+    const evidenceQuote = primaryProblem?.evidenceQuotes?.[0]?.quote || "";
+    const linearMarkdown = `### [P0] ${ticketTitle}
+- **Priority:** P0 (Critical Churn Risk)
+- **Component:** \`${primaryComponent}\`
+- **Recommended Sprint Action:** ${primaryAction}
+- **Impact:** ${burningIssue?.impact || primaryProblem?.impact || "Mijozlar ketishi va daromad yo'qotilishi xavfi"}${evidenceQuote ? `\n- **Customer Quote:** "${evidenceQuote}"` : ""}`;
+
+    try {
+      await navigator.clipboard.writeText(linearMarkdown);
+    } catch {
+      // fallback
+    }
+    setCopiedLinearIssue(true);
+    setTimeout(() => setCopiedLinearIssue(false), 2000);
   };
 
   return (
@@ -167,42 +188,35 @@ export function SummaryCard({
           {data.summary}
         </p>
 
-        {/* 2. Primary Recommended Action (Integrated Linear Callout) */}
-        <div className="mt-4 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 shadow-2xs">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-            <div className="space-y-1 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  Konkret tavsiya etilgan harakat
-                </span>
-                {burningIssue && (
-                  <span className="text-[11px] text-slate-400">
-                    · {burningIssue.title}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs sm:text-sm font-medium text-slate-900 leading-snug">
-                {primaryAction}
-              </p>
+        {/* 2. Primary Recommended Engineering Task (Linear Issue Format) */}
+        <div className="mt-4 rounded-lg border border-slate-200/90 bg-white p-3.5 sm:p-4 shadow-2xs space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-mono font-semibold text-rose-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                P0 Engineering Task
+              </span>
+              <span className="text-xs text-slate-500 font-mono">
+                · {primaryComponent}
+              </span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0 self-start sm:self-center">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={handleCopyAction}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all active:scale-[0.98] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]"
-                title="Tavsiya etilgan harakatni nusxalash"
+                onClick={handleCopyLinearIssue}
+                className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all active:scale-[0.98] duration-100 ease-out shadow-2xs"
+                title="Linear va Jira uchun Markdown formatida nusxalash"
               >
-                {copiedAction ? (
+                {copiedLinearIssue ? (
                   <>
                     <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    <span className="text-emerald-700 font-medium">Nusxalandi</span>
+                    <span className="text-emerald-700 font-medium">Linear task nusxalandi</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-3.5 w-3.5 text-slate-400" />
-                    <span>Nusxalash</span>
+                    <span>Linear vazifa sifatida nusxalash</span>
                   </>
                 )}
               </button>
@@ -211,13 +225,22 @@ export function SummaryCard({
                 <button
                   type="button"
                   onClick={onScrollToMatrix}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 text-white px-3 py-1.5 text-xs font-medium hover:bg-slate-800 transition-all active:scale-[0.98] duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xs"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-slate-900 text-white px-2.5 py-1 text-xs font-medium hover:bg-slate-800 transition-all active:scale-[0.98] duration-100 ease-out shadow-2xs"
                 >
                   <span>Matritsani ko&apos;rish</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
+          </div>
+
+          <div className="space-y-1">
+            <h4 className="text-xs sm:text-sm font-semibold text-slate-950 tracking-tight leading-snug">
+              {ticketTitle}
+            </h4>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              <strong className="font-medium text-slate-900">Sprint yechimi:</strong> {primaryAction}
+            </p>
           </div>
         </div>
       </div>

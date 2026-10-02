@@ -14,6 +14,8 @@ import {
 import { EvidenceModal } from "@/components/results/evidence-modal";
 import { FeedbackPreset } from "@/components/presets";
 import { AnalysisResponse, ProblemSolutionItem } from "@/types/analyzer";
+import { BENCHMARK_ANALYSIS_DATA } from "@/lib/benchmark-data";
+import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
   const [feedbackText, setFeedbackText] = useState("");
@@ -83,6 +85,19 @@ export default function HomePage() {
     setErrorState(null);
   };
 
+  const handleInstantPreview = () => {
+    setErrorState(null);
+    setAnalysisData(BENCHMARK_ANALYSIS_DATA);
+    if (!feedbackText) {
+      setFeedbackText(
+        "To'lov jarayonida 3D-Secure sekin ishlayapti va pul yechilgach buyurtma tasdiqlanmayapti. Kuryer tracking holati ham yangilanmadi."
+      );
+    }
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
+
   const handleResetAnalysis = () => {
     setAnalysisData(null);
     setErrorState(null);
@@ -100,14 +115,30 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 space-y-8">
       {/* 1. Concise, Outcome-Focused Hero (Raycast & Linear Standard) */}
-      <section className="space-y-3 pt-2 text-center sm:text-left">
+      <section className="space-y-3.5 pt-2 text-center sm:text-left">
+        <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50/80 px-3 py-1 font-mono text-[11px] font-medium text-slate-700 shadow-2xs">
+          <span className="h-1.5 w-1.5 rounded-full bg-slate-900" />
+          <span>Shunchaki sentiment emas: Linear va Jira uchun tayyor backlog</span>
+        </div>
+
         <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl leading-[1.12]">
           Mijoz fikrlarini ustuvor vazifalarga aylantiring
         </h1>
 
-        <p className="max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-normal">
-          Tarqoq sharhlardan tizimli muammolarni ajrating, biznesga ta&apos;sirini baholang va keyingi muhandislik qadamini belgilang.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <p className="max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-normal">
+            Tarqoq sharhlardan tizimli muammolarni ajrating, biznesga ta&apos;sirini baholang va keyingi muhandislik qadamini belgilang.
+          </p>
+
+          <button
+            type="button"
+            onClick={handleInstantPreview}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-900 hover:text-slate-600 underline underline-offset-4 active:scale-[0.98] transition-all duration-100 ease-out shrink-0 self-center sm:self-start"
+          >
+            <span>Jonli namunani ko&apos;rish</span>
+            <ArrowRight className="h-3 w-3" />
+          </button>
+        </div>
       </section>
 
       {/* 2. Focused Feedback Input & Chip Presets Workspace */}
@@ -118,6 +149,8 @@ export default function HomePage() {
           onAnalyze={handleAnalyze}
           isLoading={isLoading}
           onSelectPreset={handleSelectPreset}
+          onInstantPreview={handleInstantPreview}
+          hasResults={!!analysisData}
           error={errorState?.type === "validation" ? errorState.message : null}
         />
       </section>

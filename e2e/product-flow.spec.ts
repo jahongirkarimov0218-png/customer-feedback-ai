@@ -1,6 +1,47 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Founder-Grade Customer Feedback Intelligence E2E", () => {
+  test("Instant Preview workflow: 1-click demo -> benchmark dashboard -> Linear task export", async ({
+    page,
+  }) => {
+    // 1. Visit homepage
+    await page.goto("/");
+    await expect(page).toHaveTitle(/Customer Feedback|Mijoz/i);
+
+    // 2. Verify UVP micro-badge without emojis
+    const uvpBadge = page.locator("text=Linear va Jira uchun tayyor backlog");
+    await expect(uvpBadge).toBeVisible();
+
+    // 3. Click Instant Preview trigger button
+    const instantPreviewBtn = page
+      .locator("button:has-text('Jonli namunani ko')")
+      .first();
+    await expect(instantPreviewBtn).toBeVisible();
+    await instantPreviewBtn.click();
+
+    // 4. Results must immediately render without network delay
+    const resultsSection = page.locator("#analysis-results");
+    await expect(resultsSection).toBeVisible({ timeout: 5000 });
+
+    // 5. Verify Executive Brief & Action Bar with ready engineering task format
+    await expect(page.locator("text=Executive Brief")).toBeVisible();
+    await expect(page.locator("text=P0 Engineering Task")).toBeVisible();
+    await expect(page.locator("text=Sprint yechimi:")).toBeVisible();
+
+    // 6. Test Copy as Linear Issue button with tactile feedback
+    const copyLinearBtn = page.locator(
+      "button:has-text('Linear vazifa sifatida nusxalash')"
+    );
+    await expect(copyLinearBtn).toBeVisible();
+    await copyLinearBtn.click();
+    await expect(page.locator("text=Linear task nusxalandi")).toBeVisible();
+
+    // 7. Verify priority filtering works on benchmark data
+    const highFilter = page.locator("button:has-text('Yuqori')").first();
+    await highFilter.click();
+    await expect(page.locator("text=To'lov gateway uzilishi").first()).toBeVisible();
+  });
+
   test("Complete product flow: chip preset -> analysis -> insights -> evidence modal -> priority matrix", async ({
     page,
   }) => {

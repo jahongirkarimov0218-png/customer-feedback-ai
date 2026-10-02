@@ -24,6 +24,8 @@ export interface FeedbackInputProps {
   className?: string;
   showPresets?: boolean;
   onSelectPreset?: (preset: FeedbackPreset) => void;
+  onInstantPreview?: () => void;
+  hasResults?: boolean;
 }
 
 export interface FeedbackStats {
@@ -66,6 +68,8 @@ export function FeedbackInput({
   className,
   showPresets = true,
   onSelectPreset,
+  onInstantPreview,
+  hasResults = false,
 }: FeedbackInputProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -224,6 +228,19 @@ export function FeedbackInput({
                 Enter
               </kbd>
             </div>
+
+            {onInstantPreview && (
+              <button
+                type="button"
+                onClick={onInstantPreview}
+                disabled={isLoading || disabled}
+                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98] duration-100 ease-out select-none cursor-pointer"
+                title="Tayyor tahlil natijasini darhol ko'rish (Instant Preview)"
+              >
+                <span>Jonli namunani ko&apos;rish</span>
+                <ArrowRight className="h-3 w-3 text-slate-400" />
+              </button>
+            )}
 
             <button
               type="button"
