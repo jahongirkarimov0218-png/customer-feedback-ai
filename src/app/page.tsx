@@ -12,6 +12,9 @@ import {
   Zap,
   ArrowRight,
   TrendingUp,
+  Quote,
+  Target,
+  ArrowDown,
 } from "lucide-react";
 import { FeedbackInput } from "@/components/feedback-input";
 import { SkeletonLoader } from "@/components/skeleton-loader";
@@ -22,8 +25,9 @@ import {
   TopInsights,
   ProblemsTable,
 } from "@/components/results";
+import { EvidenceModal } from "@/components/results/evidence-modal";
 import { FEEDBACK_PRESETS, FeedbackPreset } from "@/components/presets";
-import { AnalysisResponse } from "@/types/analyzer";
+import { AnalysisResponse, ProblemSolutionItem } from "@/types/analyzer";
 
 export default function HomePage() {
   const [feedbackText, setFeedbackText] = useState("");
@@ -34,13 +38,19 @@ export default function HomePage() {
     type: ErrorType;
   } | null>(null);
 
+  // Modal state for viewing verbatim quotes
+  const [selectedProblemForEvidence, setSelectedProblemForEvidence] =
+    useState<ProblemSolutionItem | null>(null);
+  const [isEvidenceModalOpen, setIsEvidenceModalOpen] = useState(false);
+
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleAnalyze = async () => {
     const trimmed = feedbackText.trim();
     if (trimmed.length < 10) {
       setErrorState({
-        message: "Fikr matni kamida 10 ta belgidan iborat bo'lishi kerak. Iltimos, batafsilroq sharh yozing yoki tayyor namunalardan birini tanlang.",
+        message:
+          "Fikr matni kamida 10 ta belgidan iborat bo'lishi kerak. Iltimos, batafsilroq sharh yozing yoki tayyor namunalardan birini tanlang.",
         type: "validation",
       });
       return;
@@ -75,7 +85,9 @@ export default function HomePage() {
         err instanceof Error ? err.message : "Kutilmagan xatolik yuz berdi";
       setErrorState({
         message: errorMessage,
-        type: errorMessage.toLowerCase().includes("network") ? "network" : "server",
+        type: errorMessage.toLowerCase().includes("network")
+          ? "network"
+          : "server",
       });
     } finally {
       setIsLoading(false);
@@ -102,41 +114,53 @@ export default function HomePage() {
     }
   };
 
+  const handleOpenEvidence = (problem: ProblemSolutionItem) => {
+    setSelectedProblemForEvidence(problem);
+    setIsEvidenceModalOpen(true);
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 space-y-10">
-      {/* 1. Hero Section */}
-      <section className="text-center sm:text-left">
+      {/* 1. Founder-First Hero Section (Problem -> Outcome -> Clarity) */}
+      <section className="text-center sm:text-left space-y-4">
         <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-subtle">
-          <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
-          <span>Semantic AI Intelligence • Roma Rayt Pattern</span>
+          <Target className="h-3.5 w-3.5 text-emerald-600" />
+          <span>Product Intelligence &amp; Customer Voice System</span>
         </div>
 
-        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-          Mijozlaringiz nima deyayotganini chuqur tushuning
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl leading-tight">
+          Mijoz fikrlari tarqoq bo‘lganda, birinchi bo‘lib nimani tuzatish kerak?
         </h1>
 
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-          Mijozlar sharhlari va e&apos;tirozlarini bir zumda tahlil qiling: aniq sentiment taqsimoti,
-          3 ta eng muhim strategik insight va amaliy yechimlar jadvali.
+        <p className="max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          Support chatlari, ilova sharhlari va e&apos;tirozlardagi shovqinni saralash o&apos;rniga,
+          haqiqiy ildiz muammolarni ajrating: aniq mijoz dalillari, biznesga ta&apos;sir qiluvchi xatarlar (churn/daromad)
+          va jamoa uchun ustuvorlashtirilgan harakatlar.
         </p>
 
-        {/* Value Prop Feature Pills */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:justify-start">
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-subtle">
-            <BarChart3 className="h-4 w-4 text-emerald-600" />
-            <span>Sentiment Tahlili</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-subtle">
-            <Lightbulb className="h-4 w-4 text-amber-600" />
-            <span>Top 3 Xulosalar</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-subtle">
-            <ShieldAlert className="h-4 w-4 text-rose-600" />
-            <span>Ustuvor Yechimlar Matritsasi</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-subtle">
-            <CheckCircle2 className="h-4 w-4 text-blue-600" />
-            <span>Smart Fallback Engine</span>
+        {/* Value Pipeline: Feedback -> Problem -> Evidence -> Impact -> Priority -> Action */}
+        <div className="pt-2">
+          <div className="inline-flex flex-wrap items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/70 p-2 text-xs text-slate-600">
+            <span className="font-semibold text-slate-900">Mahsulot oqimi:</span>
+            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle">
+              1. Xom Feedback
+            </span>
+            <span className="text-slate-400">→</span>
+            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-amber-700">
+              2. Ildiz Muammo
+            </span>
+            <span className="text-slate-400">→</span>
+            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-emerald-700">
+              3. Mijoz Dalili
+            </span>
+            <span className="text-slate-400">→</span>
+            <span className="rounded bg-white px-2 py-0.5 font-medium border border-slate-200/60 shadow-subtle text-rose-700">
+              4. Biznes Ta&apos;siri
+            </span>
+            <span className="text-slate-400">→</span>
+            <span className="rounded bg-slate-900 px-2 py-0.5 font-semibold text-white shadow-subtle">
+              5. Ustuvor Harakat
+            </span>
           </div>
         </div>
       </section>
@@ -184,7 +208,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
               <h2 className="text-base font-bold text-slate-900 tracking-tight sm:text-lg">
-                Tahlil Natijalari (AI Intelligence Report)
+                Mahsulot Strategik Hisoboti (Customer Intelligence Report)
               </h2>
             </div>
 
@@ -200,7 +224,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Row 1: Executive Summary (60%) & Sentiment Breakdown (40%) */}
+          {/* Row 1: Executive Summary & Health Score (7 cols) & Sentiment Breakdown (5 cols) */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <SummaryCard data={analysisData} />
@@ -215,17 +239,18 @@ export default function HomePage() {
             <TopInsights insights={analysisData.topInsights} />
           </div>
 
-          {/* Row 3: Problems, Priority & Solutions Matrix Table */}
+          {/* Row 3: 5-Column Problems Table (Problem | Impact | Evidence | Priority | Action) */}
           <div>
             <ProblemsTable
               problems={analysisData.problems}
               fullAnalysis={analysisData}
+              onOpenEvidence={handleOpenEvidence}
             />
           </div>
         </section>
       )}
 
-      {/* 6. Empty State: Educational & Quick Guidance (shown before first analysis) */}
+      {/* 6. Empty State: 3-Step Clear Mental Model */}
       {!analysisData && !isLoading && (
         <section className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-6 sm:p-8">
           <div className="text-center max-w-xl mx-auto">
@@ -248,15 +273,15 @@ export default function HomePage() {
                   <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
                     1
                   </span>
-                  <span>Fikrlarni yuklash</span>
+                  <span>Mijozlar ovozini jamlash</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Real mijoz sharhlari, e&apos;tirozlari va takliflari kiritiladi yoki preset tanlanadi.
+                  Support chiptalari, do&apos;kon sharhlari va e&apos;tirozlar matnini kiritish yoki sanoat presetini tanlash.
                 </p>
               </div>
               <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-emerald-600 font-medium">
                 <Zap className="h-3 w-3" />
-                <span>4 ta tayyor namuna mavjud</span>
+                <span>4 ta tayyor sanoat keysi</span>
               </div>
             </div>
 
@@ -267,15 +292,15 @@ export default function HomePage() {
                   <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
                     2
                   </span>
-                  <span>Semantik tahlil</span>
+                  <span>Ildiz muammolarni ajratish</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Google Gemini / GPT-4o yoki ichki Smart Fallback dvigateli orqali chuqur semantik sintez.
+                  Yuzaki shikoyatlar o&apos;rniga tizimli sabablar, mijoz iqtiboslari va biznes xatarlari avtomatik aniqlanadi.
                 </p>
               </div>
               <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-blue-600 font-medium">
                 <Sparkles className="h-3 w-3" />
-                <span>100% oflayn kafolat</span>
+                <span>Semantik tahlil &amp; 100% oflayn</span>
               </div>
             </div>
 
@@ -286,15 +311,15 @@ export default function HomePage() {
                   <span className="flex h-5 w-5 items-center justify-center rounded-md bg-slate-100 text-slate-700 font-mono text-[11px]">
                     3
                   </span>
-                  <span>Yechimlar Matritsasi</span>
+                  <span>Ustuvor harakatlar matritsasi</span>
                 </div>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Muammolar ustuvorlik (High/Medium/Low) bo&apos;yicha saralanadi va CSV/JSON eksport qilinadi.
+                  P0/P1/P2 ustuvorliklari, tavsiya etilgan muhandislik yechimlari va Linear/Jira vazifalari formatida eksport.
                 </p>
               </div>
               <div className="mt-3 pt-2 border-t border-slate-100 flex items-center gap-1 text-[11px] text-indigo-600 font-medium">
                 <TrendingUp className="h-3 w-3" />
-                <span>Eksport va nusxalash</span>
+                <span>CSV, JSON va Linear nusxalash</span>
               </div>
             </div>
           </div>
@@ -321,6 +346,16 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Global Evidence Modal */}
+      <EvidenceModal
+        problem={selectedProblemForEvidence}
+        isOpen={isEvidenceModalOpen}
+        onClose={() => {
+          setIsEvidenceModalOpen(false);
+          setSelectedProblemForEvidence(null);
+        }}
+      />
     </div>
   );
 }

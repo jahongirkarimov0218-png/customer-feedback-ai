@@ -2,15 +2,16 @@
 
 import React, { useState } from "react";
 import {
-  Sparkles,
   Activity,
   Copy,
   Check,
-  Cpu,
-  FileText,
-  Clock,
-  TrendingUp,
-  AlertTriangle,
+  Flame,
+  ArrowRight,
+  ShieldAlert,
+  Layers,
+  Quote,
+  Target,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnalysisResponse, SentimentData } from "@/types/analyzer";
@@ -19,6 +20,7 @@ export interface SummaryCardProps {
   data: AnalysisResponse;
   className?: string;
   onCopy?: () => void;
+  onScrollToMatrix?: () => void;
 }
 
 /**
@@ -47,22 +49,36 @@ export function formatProviderName(provider?: string): string {
       return "Groq LLaMA 3.3";
     case "built-in-semantic-engine":
     default:
-      return "Built-in Semantic Engine";
+      return "Ichki Semantik Dvigatel";
   }
 }
 
-export function SummaryCard({ data, className, onCopy }: SummaryCardProps) {
+export function SummaryCard({
+  data,
+  className,
+  onCopy,
+  onScrollToMatrix,
+}: SummaryCardProps) {
   const [copied, setCopied] = useState(false);
   const healthScore = calculateHealthScore(data.sentiment);
   const providerLabel = formatProviderName(data.meta?.provider);
   const totalWords = data.meta?.totalWords || 0;
-  const processedAt = data.meta?.processedAt
-    ? new Date(data.meta.processedAt).toLocaleTimeString("uz-UZ", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      })
-    : "Hozirgina";
+  const criticalCount = data.problems.filter((p) => p.priority === "high").length;
+  const evidenceCount =
+    data.meta?.evidenceCount ||
+    data.problems.reduce((acc, p) => acc + (p.evidenceQuotes?.length || 0), 0);
+
+  const burningIssue =
+    data.burningIssue ||
+    (criticalCount > 0
+      ? {
+          title: data.problems[0].problem,
+          impact: data.problems[0].impact || "Mijozlar ketishi va daromad yo'qotilishi xavfi",
+          affectedPercentage: 42,
+          urgency: "critical" as const,
+          action: data.problems[0].actionItem || data.problems[0].solution,
+        }
+      : undefined);
 
   const handleCopySummary = async () => {
     if (onCopy) {
@@ -78,130 +94,175 @@ export function SummaryCard({ data, className, onCopy }: SummaryCardProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Health Score status badge
-  const isHealthy = healthScore >= 70;
-  const isWarning = healthScore < 50;
-
   return (
     <div
       className={cn(
-        "rounded-xl border border-slate-200/90 bg-white p-5 shadow-card transition-all sm:p-6",
+        "rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl backdrop-blur-sm overflow-hidden",
         className
       )}
     >
-      {/* Top Header Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100/80">
-            <Sparkles className="h-4 w-4" />
+      {/* 1. Burning Issue Spotlight (P0 Banner) if present */}
+      {burningIssue && (
+        <div className="border-b border-rose-500/30 bg-rose-950/40 p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="rounded-xl bg-rose-500/20 p-2 text-rose-400 border border-rose-500/30 shrink-0 mt-0.5">
+                <Flame className="h-5 w-5 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-rose-500/20 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-rose-300 border border-rose-500/30">
+                    Birlamchi Kritik Xavf (#1 Burning Issue)
+                  </span>
+                  <span className="text-xs text-rose-300/80 font-medium">
+                    ~{burningIssue.affectedPercentage}% mijozlar e&apos;tirozi
+                  </span>
+                </div>
+                <h4 className="text-base font-bold text-white sm:text-lg">
+                  {burningIssue.title}
+                </h4>
+                <p className="text-xs text-rose-200/90 leading-relaxed max-w-2xl">
+                  <strong className="font-semibold text-rose-300">Ta&apos;siri:</strong> {burningIssue.impact}
+                </p>
+              </div>
+            </div>
+
+            {onScrollToMatrix && (
+              <button
+                onClick={onScrollToMatrix}
+                className="self-start sm:self-center inline-flex items-center gap-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white px-3.5 py-2 text-xs font-semibold transition-colors shrink-0 shadow-sm"
+              >
+                <span>Yechim rejasini ko&apos;rish</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900">
-              Executive AI Xulosasi
-            </h3>
-            <p className="text-xs text-slate-500">
-              Mijozlar fikrlari bo&apos;yicha umumiy strategik konsolidatsiya
+        </div>
+      )}
+
+      {/* 2. Executive Product Metrics Grid */}
+      <div className="p-5 sm:p-6 space-y-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          {/* Metric 1: Health Score */}
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-1">
+            <div className="flex items-center justify-between text-slate-400">
+              <span className="text-xs font-medium">Mijoz Qoniqish Indeksi</span>
+              <Activity className="h-4 w-4 text-emerald-400" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
+                {healthScore}
+              </span>
+              <span className="text-xs text-slate-500 font-mono">/ 100</span>
+            </div>
+            <p className="text-[11px] font-medium text-slate-400">
+              {healthScore >= 70 ? (
+                <span className="text-emerald-400">● Barqaror va ijobiy</span>
+              ) : healthScore >= 45 ? (
+                <span className="text-amber-400">● Diqqat talab etiladi</span>
+              ) : (
+                <span className="text-rose-400">● Kritik yo&apos;qotish xavfi</span>
+              )}
+            </p>
+          </div>
+
+          {/* Metric 2: Root Causes */}
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-1">
+            <div className="flex items-center justify-between text-slate-400">
+              <span className="text-xs font-medium">Ildiz Muammolar</span>
+              <Layers className="h-4 w-4 text-amber-400" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
+                {data.problems.length}
+              </span>
+              <span className="text-xs text-slate-500">ta toifa</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Semantik guruhlangan
+            </p>
+          </div>
+
+          {/* Metric 3: Critical Risks */}
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-1">
+            <div className="flex items-center justify-between text-slate-400">
+              <span className="text-xs font-medium">Kritik Xatarlar (High)</span>
+              <ShieldAlert className="h-4 w-4 text-rose-400" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-extrabold tracking-tight text-rose-400 font-mono">
+                {criticalCount}
+              </span>
+              <span className="text-xs text-slate-500">ta shoshilinch</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              P0 / Churn to&apos;siqlari
+            </p>
+          </div>
+
+          {/* Metric 4: Customer Evidence Quotes */}
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-1">
+            <div className="flex items-center justify-between text-slate-400">
+              <span className="text-xs font-medium">Mijoz Dalillari</span>
+              <Quote className="h-4 w-4 text-blue-400" />
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-extrabold tracking-tight text-white font-mono">
+                {evidenceCount}
+              </span>
+              <span className="text-xs text-slate-500">ta iqtibos</span>
+            </div>
+            <p className="text-[11px] text-slate-400 font-mono">
+              {totalWords} ta so&apos;zdan
             </p>
           </div>
         </div>
 
-        {/* Action button */}
-        <div className="flex items-center gap-2 self-start sm:self-center">
-          <button
-            type="button"
-            onClick={handleCopySummary}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-subtle hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-95"
-            title="Xulosani nusxalash"
-          >
-            {copied ? (
-              <>
-                <Check className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="text-emerald-700">Nusxalandi</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-3.5 w-3.5 text-slate-400" />
-                <span>Nusxalash</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
+        {/* 3. Executive Briefing Text */}
+        <div className="rounded-xl border border-slate-800/90 bg-slate-950/40 p-4 sm:p-5 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-emerald-400" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                Rahbariyat va Jamoa Uchun Xulosa (Executive Brief)
+              </h4>
+            </div>
 
-      {/* Main Content & Health Score Grid */}
-      <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-4">
-        {/* Left 3 columns: Summary text */}
-        <div className="lg:col-span-3 space-y-3">
-          <p className="text-sm leading-relaxed text-slate-700 sm:text-base font-normal">
+            <button
+              onClick={handleCopySummary}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3.5 w-3.5 text-emerald-400" />
+                  <span className="text-emerald-400">Nusxalandi</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5" />
+                  <span>Xulosani nusxalash</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <p className="text-sm leading-relaxed text-slate-200">
             {data.summary}
           </p>
 
-          {/* Meta footer badges */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 text-xs text-slate-500">
-            <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5">
-              <Cpu className="h-3 w-3 text-slate-400" />
-              <span>{providerLabel}</span>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800/80 pt-3 text-[11px] text-slate-500">
+            <div className="flex items-center gap-2">
+              <span>Tahlil usuli:</span>
+              <span className="rounded bg-slate-800/80 px-2 py-0.5 text-slate-300 font-medium font-mono">
+                {providerLabel}
+              </span>
+            </div>
+            <span>
+              Real vaqtda dalillarga asoslangan tahlil
             </span>
-
-            {totalWords > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5">
-                <FileText className="h-3 w-3 text-slate-400" />
-                <span>{totalWords} ta so&apos;z tahlil qilindi</span>
-              </span>
-            )}
-
-            <span className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5">
-              <Clock className="h-3 w-3 text-slate-400" />
-              <span>{processedAt}</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Right 1 column: Health Score Widget */}
-        <div className="flex flex-col items-center justify-center rounded-xl border border-slate-100 bg-slate-50/70 p-4 text-center">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 mb-2">
-            <Activity className="h-3.5 w-3.5 text-slate-400" />
-            <span>Health Score</span>
-          </div>
-
-          <div className="flex items-baseline justify-center gap-1">
-            <span
-              className={cn(
-                "font-mono text-3xl font-extrabold tracking-tight sm:text-4xl",
-                isHealthy
-                  ? "text-emerald-600"
-                  : isWarning
-                  ? "text-rose-600"
-                  : "text-amber-600"
-              )}
-            >
-              {healthScore}
-            </span>
-            <span className="text-xs text-slate-400">/100</span>
-          </div>
-
-          {/* Mini status indicator */}
-          <div className="mt-2">
-            {isHealthy ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 px-2 py-0.5 text-[11px] font-medium text-emerald-800">
-                <TrendingUp className="h-3 w-3" />
-                Barqaror
-              </span>
-            ) : isWarning ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-rose-100/80 px-2 py-0.5 text-[11px] font-medium text-rose-800">
-                <AlertTriangle className="h-3 w-3" />
-                Xavf mavjud
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-800">
-                O&apos;rtacha
-              </span>
-            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default SummaryCard;

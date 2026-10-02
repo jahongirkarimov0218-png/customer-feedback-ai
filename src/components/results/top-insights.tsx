@@ -173,12 +173,23 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
                 <p className="mt-2 text-xs leading-relaxed text-slate-600">
                   {insight.description}
                 </p>
+
+                {/* Customer Verbatim Quote if available */}
+                {insight.evidenceQuote && (
+                  <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50/80 p-2.5 text-[11px] italic text-slate-600">
+                    <span className="font-semibold text-slate-700 not-italic mr-1">“Mijoz ovozi:</span>
+                    {insight.evidenceQuote}”
+                  </div>
+                )}
               </div>
 
-              {/* Bottom Subtle Indicator */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Ustuvor vazifa</span>
-                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
+              {/* Bottom Strategic Action Indicator */}
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <span className="flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  Strategik qaror
+                </span>
+                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </div>
             </div>
           );
@@ -192,3 +203,4 @@ export function TopInsights({ insights, className }: TopInsightsProps) {
 export const InsightsList = TopInsights;
 
 export default TopInsights;
+
